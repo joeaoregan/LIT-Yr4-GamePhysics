@@ -23,17 +23,18 @@ public:
 	virtual void Motion(int x, int y);
 	virtual void Display();
 				
-	void UpdateCamera();				// camera functions
+	void UpdateCamera();																			// camera functions
+	void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	// drawing functions
 	
 	protected:
 			// camera control
-			btVector3 m_cameraPosition; // the camera's current position
-			btVector3 m_cameraTarget;	// the camera's lookAt target
-			float m_nearPlane;			// minimum distance the camera will render
-			float m_farPlane;			// farthest distance the camera will render
-			btVector3 m_upVector;		// keeps the camera rotated correctly
+			btVector3 m_cameraPosition;																// the camera's current position
+			btVector3 m_cameraTarget;																// the camera's lookAt target
+			float m_nearPlane;																		// minimum distance the camera will render
+			float m_farPlane;																		// farthest distance the camera will render
+			btVector3 m_upVector;																	// keeps the camera rotated correctly
 										  
-			int m_screenWidth;
+			int m_screenWidth;																		// Screen dimensions
 			int m_screenHeight;
 };
 

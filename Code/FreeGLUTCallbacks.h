@@ -3,12 +3,12 @@
 
 #include "BulletOpenGLApplication.h"
 
-// global pointer to our application object
-static BulletOpenGLApplication* g_pApp;
+static BulletOpenGLApplication* g_pApp;		// global pointer to our application object
 
-// Various static functions that will be handed to FreeGLUT to be called
-// during various events (our callbacks). Each calls an equivalent function
-// in our (global) application object.
+/* 
+	Various static functions that will be handed to FreeGLUT to be called during various events (our callbacks). 
+	Each calls an equivalent function in our (global) application object. 
+*/
 static void KeyboardCallback(unsigned char key, int x, int y) {
 	g_pApp->Keyboard(key, x, y);
 }
@@ -39,10 +39,8 @@ static void DisplayCallback(void) {
 
 // our custom-built 'main' function, which accepts a reference to a 
 // BulletOpenGLApplication object.
-int glutmain(int argc, char **argv, int width, int height, const char* title, BulletOpenGLApplication* pApp) {
-    // store the application object so we can
-	// access it globally
-	g_pApp = pApp;
+int glutmain(int argc, char **argv, int width, int height, const char* title, BulletOpenGLApplication* pApp) {    
+	g_pApp = pApp;																	// store the application object so we can access it globally
 
 	// initialize the window
 	glutInit(&argc, argv);
@@ -51,9 +49,8 @@ int glutmain(int argc, char **argv, int width, int height, const char* title, Bu
 	glutInitWindowSize(width, height);
 	glutCreateWindow(title);
 	glutSetOption (GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
-
-	// perform custom initialization our of application
-	g_pApp->Initialize();
+		
+	g_pApp->Initialize();															// perform custom initialization our of application
 
 	// give our static
 	glutKeyboardFunc(KeyboardCallback);
@@ -66,14 +63,12 @@ int glutmain(int argc, char **argv, int width, int height, const char* title, Bu
 	glutPassiveMotionFunc(MotionCallback);
 	glutMotionFunc(MotionCallback);
 	glutDisplayFunc(DisplayCallback );
-
-	// perform one render before we launch the application
-	g_pApp->Idle();
+		
+	g_pApp->Idle();																	// perform one render before we launch the application
 	
-	// hand application control over to the FreeGLUT library.
-	// This function remains in a while-loop until the
-	// application is exited.
+	// hand application control over to the FreeGLUT library. This function remains in a while-loop until the application is exited.
 	glutMainLoop();
+
 	return 0;
 }
 #endif
