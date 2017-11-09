@@ -6,6 +6,7 @@
 #include <GL/GL.h>
 #include <GL/freeglut.h>
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
+#include "OpenGLMotionState.h"																		// include our custom Motion State object
 
 class BulletOpenGLApplication {
 public:
@@ -24,27 +25,32 @@ public:
 	virtual void Motion(int x, int y);
 	virtual void Display();
 
+	virtual void RenderScene();																		// rendering. Can be overridden by derived classes
+	virtual void UpdateScene(float dt);																// scene updating. Can be overridden by derived classes
+
 	// physics functions. Can be overriden by derived classes (like BasicDemo)
 	virtual void InitializePhysics() {};
 	virtual void ShutdownPhysics() {};
 				
 	void UpdateCamera();																			// camera functions
-	void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	// drawing functions
 	void RotateCamera(float &angle, float value);
 	void ZoomCamera(float distance);
 	
+	//void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	// drawing functions
+	void DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));
+	
 protected:
 	// camera control
-	btVector3 m_cameraPosition;																// the camera's current position
-	btVector3 m_cameraTarget;																// the camera's lookAt target
-	float m_nearPlane;																		// minimum distance the camera will render
-	float m_farPlane;																		// farthest distance the camera will render
-	btVector3 m_upVector;																	// keeps the camera rotated correctly
-	float m_cameraDistance;																	// distance from the camera to its target
-	float m_cameraPitch; 																	// pitch of the camera 
-	float m_cameraYaw; 																		// yaw of the camera
+	btVector3 m_cameraPosition;																		// the camera's current position
+	btVector3 m_cameraTarget;																		// the camera's lookAt target
+	float m_nearPlane;																				// minimum distance the camera will render
+	float m_farPlane;																				// farthest distance the camera will render
+	btVector3 m_upVector;																			// keeps the camera rotated correctly
+	float m_cameraDistance;																			// distance from the camera to its target
+	float m_cameraPitch; 																			// pitch of the camera 
+	float m_cameraYaw; 																				// yaw of the camera
 										  
-	int m_screenWidth,m_screenHeight;														// Screen dimensions
+	int m_screenWidth,m_screenHeight;																// Screen dimensions
 
 	// core Bullet components
 	btBroadphaseInterface* m_pBroadphase;
@@ -52,6 +58,9 @@ protected:
 	btCollisionDispatcher* m_pDispatcher;
 	btConstraintSolver* m_pSolver;
 	btDynamicsWorld* m_pWorld;
+
+	OpenGLMotionState* m_pMotionState;																// our custom motion state
+	btClock m_clock;																				// a simple clock for counting time
 };
 
 #endif

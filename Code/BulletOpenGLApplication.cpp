@@ -16,7 +16,8 @@ BulletOpenGLApplication::BulletOpenGLApplication() :
 	m_pCollisionConfiguration(0),
 	m_pDispatcher(0),
 	m_pSolver(0),
-	m_pWorld(0)
+	m_pWorld(0),
+	m_pMotionState(0)
 {}
 
 BulletOpenGLApplication::~BulletOpenGLApplication() {
@@ -95,8 +96,17 @@ void BulletOpenGLApplication::Idle() {
 	// this function is called frequently, whenever FreeGlut isn't busy processing its own events. 
 	// It should be used to perform any updating and rendering tasks 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);							// clear the backbuffer	
+
+	float dt = m_clock.getTimeMilliseconds();									// get the time since the last iteration
+	m_clock.reset();															// reset the clock to 0
+	UpdateScene(dt / 1000.0f);													// update the scene (convert ms to s)
+
 	UpdateCamera();																// update the camera
-	DrawBox(btVector3(1, 1, 1), btVector3(1.0f, 0.2f, 0.2f));					// draw a simple box of size 1 also draw it red
+
+	//DrawBox(btVector3(1, 1, 1), btVector3(1.0f, 0.2f, 0.2f));					// draw a simple box of size 1 also draw it red
+
+	RenderScene();																// Render the scene
+
 	glutSwapBuffers();															// swap the front and back buffers
 }
 
@@ -156,7 +166,10 @@ void BulletOpenGLApplication::UpdateCamera() {
 }
 
 
-void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize, const btVector3 &color) {
+void BulletOpenGLApplication::DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color) {
+	glPushMatrix();																// push the transform onto the stack
+	glMultMatrixf(transform);
+
 	float halfWidth = halfSize.x();
 	float halfHeight = halfSize.y();
 	float halfDepth = halfSize.z();
@@ -204,6 +217,8 @@ void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize, const btVector3
 	}
 	
 	glEnd();																	// stop processing vertices
+	
+	glPopMatrix();																// pop the transform from the stack in preparation for the next object
 }
 
 void BulletOpenGLApplication::RotateCamera(float &angle, float value) {	
@@ -219,4 +234,19 @@ void BulletOpenGLApplication::ZoomCamera(float distance) {
 	if (m_cameraDistance < 0.1f) m_cameraDistance = 0.1f;						// prevent it from zooming in too far	
 	UpdateCamera();																// update the camera since we changed the zoom distance
 	
+}
+
+void BulletOpenGLApplication::RenderScene() {	
+	btScalar transform[16];														// create an array of 16 floats (representing a 4x4 matrix)
+	if (m_pMotionState) {
+		m_pMotionState->GetWorldTransform(transform);							// get the world transform from our motion state
+		DrawBox(transform, btVector3(1,1,1), btVector3(1.0f,0.2f,0.2f));		// feed the data into DrawBox
+	}
+}
+
+void BulletOpenGLApplication::UpdateScene(float dt) {	
+	if (m_pWorld) {																// check if the world object exists
+		// step the simulation through time. This is called every update and the amount of elasped time was determined back in ::Idle() by our clock object.
+		m_pWorld->stepSimulation(dt);
+	}
 }
