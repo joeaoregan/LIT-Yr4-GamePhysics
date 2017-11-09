@@ -1,7 +1,7 @@
 #include "BulletOpenGLApplication.h"
 
-#define RADIANS_PER_DEGREE 0.01745329f
-#define CAMERA_STEP_SIZE 5.0f
+#define RADIANS_PER_DEGREE 0.01745329f											// Constant for 3D Math
+#define CAMERA_STEP_SIZE 5.0f													// Constant for camera speed
 
 BulletOpenGLApplication::BulletOpenGLApplication() :
 	m_cameraPosition(10.0f, 5.0f, 0.0f),
@@ -11,10 +11,17 @@ BulletOpenGLApplication::BulletOpenGLApplication() :
 	m_cameraYaw(0.0f),
 	m_upVector(0.0f, 1.0f, 0.0f),
 	m_nearPlane(1.0f),
-	m_farPlane(1000.0f)
+	m_farPlane(1000.0f),
+	m_pBroadphase(0),
+	m_pCollisionConfiguration(0),
+	m_pDispatcher(0),
+	m_pSolver(0),
+	m_pWorld(0)
 {}
 
-BulletOpenGLApplication::~BulletOpenGLApplication() {}
+BulletOpenGLApplication::~BulletOpenGLApplication() {
+	ShutdownPhysics();															// shutdown the physics system
+}
 
 void BulletOpenGLApplication::Initialize() {
 	// this function is called inside glutmain() after creating the window, but before handing control to FreeGLUT
@@ -45,6 +52,8 @@ void BulletOpenGLApplication::Initialize() {
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glClearColor(0.6, 0.65, 0.85, 0);											// set the backbuffer clearing color to a lightish blue
+
+	InitializePhysics();														// initialize the physics system
 }
 
 void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y) {

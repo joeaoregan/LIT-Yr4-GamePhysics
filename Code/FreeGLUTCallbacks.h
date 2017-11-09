@@ -48,7 +48,7 @@ int glutmain(int argc, char **argv, int width, int height, const char* title, Bu
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(width, height);
 	glutCreateWindow(title);
-	glutSetOption (GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
+	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 		
 	g_pApp->Initialize();															// perform custom initialization our of application
 
@@ -62,7 +62,7 @@ int glutmain(int argc, char **argv, int width, int height, const char* title, Bu
 	glutMouseFunc(MouseCallback);
 	glutPassiveMotionFunc(MotionCallback);
 	glutMotionFunc(MotionCallback);
-	glutDisplayFunc(DisplayCallback );
+	glutDisplayFunc(DisplayCallback);
 		
 	g_pApp->Idle();																	// perform one render before we launch the application
 	

@@ -1,6 +1,7 @@
 #ifndef _BULLETOPENGLAPP_H_
 #define _BULLETOPENGLAPP_H_
 
+
 #include <Windows.h>
 #include <GL/GL.h>
 #include <GL/freeglut.h>
@@ -22,24 +23,35 @@ public:
 	virtual void PassiveMotion(int x, int y);
 	virtual void Motion(int x, int y);
 	virtual void Display();
+
+	// physics functions. Can be overriden by derived classes (like BasicDemo)
+	virtual void InitializePhysics() {};
+	virtual void ShutdownPhysics() {};
 				
 	void UpdateCamera();																			// camera functions
 	void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	// drawing functions
 	void RotateCamera(float &angle, float value);
 	void ZoomCamera(float distance);
 	
-	protected:
-			// camera control
-			btVector3 m_cameraPosition;																// the camera's current position
-			btVector3 m_cameraTarget;																// the camera's lookAt target
-			float m_nearPlane;																		// minimum distance the camera will render
-			float m_farPlane;																		// farthest distance the camera will render
-			btVector3 m_upVector;																	// keeps the camera rotated correctly
-			float m_cameraDistance;																	// distance from the camera to its target
-			float m_cameraPitch; 																	// pitch of the camera 
-			float m_cameraYaw; 																		// yaw of the camera
+protected:
+	// camera control
+	btVector3 m_cameraPosition;																// the camera's current position
+	btVector3 m_cameraTarget;																// the camera's lookAt target
+	float m_nearPlane;																		// minimum distance the camera will render
+	float m_farPlane;																		// farthest distance the camera will render
+	btVector3 m_upVector;																	// keeps the camera rotated correctly
+	float m_cameraDistance;																	// distance from the camera to its target
+	float m_cameraPitch; 																	// pitch of the camera 
+	float m_cameraYaw; 																		// yaw of the camera
 										  
-			int m_screenWidth,m_screenHeight;														// Screen dimensions
+	int m_screenWidth,m_screenHeight;														// Screen dimensions
+
+	// core Bullet components
+	btBroadphaseInterface* m_pBroadphase;
+	btCollisionConfiguration* m_pCollisionConfiguration;
+	btCollisionDispatcher* m_pDispatcher;
+	btConstraintSolver* m_pSolver;
+	btDynamicsWorld* m_pWorld;
 };
 
 #endif
