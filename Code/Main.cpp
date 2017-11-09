@@ -14,5 +14,5 @@
 int main(int argc, char** argv) {
 	BulletOpenGLApplication demo;
 
-	return glutmain(argc, argv, 1024, 768, "Introduction to Game Physics with Bullet Physics and OpenGL", &demo);
+	return glutmain(argc, argv, 1024, 768, "Year 4 - Game Physics CA - Bullet Physics and OpenGL - Joe O'Regan K00203642", &demo);
 }
