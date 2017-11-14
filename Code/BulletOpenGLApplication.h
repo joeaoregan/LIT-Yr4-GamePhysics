@@ -8,6 +8,11 @@
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
 #include "OpenGLMotionState.h"																		// include our custom Motion State object
 
+#include "GameObject.h"
+#include <vector>
+
+typedef std::vector<GameObject*> GameObjects;														// a convenient typedef to reference an STL vector of GameObjects
+
 class BulletOpenGLApplication {
 public:
 	BulletOpenGLApplication();
@@ -35,10 +40,20 @@ public:
 	void UpdateCamera();																			// camera functions
 	void RotateCamera(float &angle, float value);
 	void ZoomCamera(float distance);
+
+	// drawing functions
+	//void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	
+	//void DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));
+	void DrawBox(const btVector3 &halfSize);
+	void DrawShape(btScalar* transform, const btCollisionShape* pShape, const btVector3 &color);
 	
-	//void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	// drawing functions
-	void DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));
-	
+	// object functions
+	GameObject* CreateGameObject(btCollisionShape* pShape,
+	const float &mass,
+	const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f),
+	const btVector3 &initialPosition = btVector3(0.0f, 0.0f, 0.0f),
+	const btQuaternion &initialRotation = btQuaternion(0, 0, 1, 1));
+
 protected:
 	// camera control
 	btVector3 m_cameraPosition;																		// the camera's current position
@@ -59,8 +74,10 @@ protected:
 	btConstraintSolver* m_pSolver;
 	btDynamicsWorld* m_pWorld;
 
-	OpenGLMotionState* m_pMotionState;																// our custom motion state
+	//OpenGLMotionState* m_pMotionState;															// our custom motion state
 	btClock m_clock;																				// a simple clock for counting time
+			
+	GameObjects m_objects;																			// an array of our game objects
 };
 
 #endif

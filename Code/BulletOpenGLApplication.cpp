@@ -16,8 +16,8 @@ BulletOpenGLApplication::BulletOpenGLApplication() :
 	m_pCollisionConfiguration(0),
 	m_pDispatcher(0),
 	m_pSolver(0),
-	m_pWorld(0),
-	m_pMotionState(0)
+	m_pWorld(0)
+//	m_pMotionState(0)
 {}
 
 BulletOpenGLApplication::~BulletOpenGLApplication() {
@@ -165,16 +165,17 @@ void BulletOpenGLApplication::UpdateCamera() {
 	// the view matrix is now set
 }
 
-
+/*
 void BulletOpenGLApplication::DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color) {
 	glPushMatrix();																// push the transform onto the stack
 	glMultMatrixf(transform);
-
+*/
+void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize) {
 	float halfWidth = halfSize.x();
 	float halfHeight = halfSize.y();
 	float halfDepth = halfSize.z();
 		
-	glColor3f(color.x(), color.y(), color.z());									// set the object's color
+//	glColor3f(color.x(), color.y(), color.z());									// set the object's color
 	
 	// create the vertex positions
 	btVector3 vertices[8] = {
@@ -218,7 +219,7 @@ void BulletOpenGLApplication::DrawBox(btScalar* transform, const btVector3 &half
 	
 	glEnd();																	// stop processing vertices
 	
-	glPopMatrix();																// pop the transform from the stack in preparation for the next object
+//	glPopMatrix();																// pop the transform from the stack in preparation for the next object
 }
 
 void BulletOpenGLApplication::RotateCamera(float &angle, float value) {	
@@ -238,15 +239,54 @@ void BulletOpenGLApplication::ZoomCamera(float distance) {
 
 void BulletOpenGLApplication::RenderScene() {	
 	btScalar transform[16];														// create an array of 16 floats (representing a 4x4 matrix)
+	/*
 	if (m_pMotionState) {
 		m_pMotionState->GetWorldTransform(transform);							// get the world transform from our motion state
 		DrawBox(transform, btVector3(1,1,1), btVector3(1.0f,0.2f,0.2f));		// feed the data into DrawBox
 	}
+	*/
+	
+	for (GameObjects::iterator i = m_objects.begin(); i != m_objects.end(); ++i) {	// iterate through all of the objects in our world		
+		GameObject* pObj = *i;														// get the object from the iterator
+		pObj->GetTransform(transform);												// read the transform		
+		DrawShape(transform, pObj->GetShape(), pObj->GetColor());					// get data from the object and draw it
+	}		
 }
 
 void BulletOpenGLApplication::UpdateScene(float dt) {	
-	if (m_pWorld) {																// check if the world object exists
-		// step the simulation through time. This is called every update and the amount of elasped time was determined back in ::Idle() by our clock object.
-		m_pWorld->stepSimulation(dt);
+	if (m_pWorld) {																	// check if the world object exists		
+		m_pWorld->stepSimulation(dt);												// step the simulation through time. This is called every update and the amount of elasped time was determined back in ::Idle() by our clock object.
 	}
+}
+
+
+void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionShape* pShape, const btVector3 &color) {	
+	glColor3f(color.x(), color.y(), color.z());																			// set the color
+		
+	glPushMatrix();																										// push the matrix stack
+	glMultMatrixf(transform);
+		
+	switch(pShape->getShapeType()) {																					// make a different draw call based on the object type		
+	case BOX_SHAPE_PROXYTYPE: {																							// an internal enum used by Bullet for boxes		
+		const btBoxShape* box = static_cast<const btBoxShape*>(pShape);													// assume the shape is a box, and typecast it		
+		btVector3 halfSize = box->getHalfExtentsWithMargin();															// get the 'halfSize' of the box		
+		DrawBox(halfSize);																								// draw the box	
+		break;	
+	}
+	default:		
+		break;																											// unsupported type
+	}
+		
+	glPopMatrix();																										// pop the stack
+}
+
+GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, const btQuaternion &initialRotation) {
+	GameObject* pObject = new GameObject(pShape, mass, color, initialPosition, initialRotation);						// create a new game object
+		
+	m_objects.push_back(pObject);																						// push it to the back of the list
+		
+	if (m_pWorld) {																										// check if the world object is valid		
+		m_pWorld->addRigidBody(pObject->GetRigidBody());																// add the object's rigid body to the world
+	}
+	return pObject;
 }
