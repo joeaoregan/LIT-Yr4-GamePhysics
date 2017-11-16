@@ -64,11 +64,11 @@ int glutmain(int argc, char **argv, int width, int height, const char* title, Bu
 	glutMotionFunc(MotionCallback);
 	glutDisplayFunc(DisplayCallback);
 		
-	g_pApp->Idle();																	// perform one render before we launch the application
+	g_pApp->Idle();																	// perform one render before we launch the application	
 	
-	// hand application control over to the FreeGLUT library. This function remains in a while-loop until the application is exited.
-	glutMainLoop();
+	glutMainLoop();																	// hand application control over to the FreeGLUT library. This function remains in a while-loop until the application is exited.
 
 	return 0;
 }
+
 #endif
