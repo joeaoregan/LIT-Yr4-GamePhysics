@@ -358,13 +358,15 @@ void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionSh
 	glPopMatrix();																										// pop the stack
 }
 
-GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, const btQuaternion &initialRotation) {
+//GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, const btQuaternion &initialRotation) { // Ch 8 Removed
+GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, short group, short mask, const btQuaternion &initialRotation) {	// Ch8 Added
 	GameObject* pObject = new GameObject(pShape, mass, color, initialPosition, initialRotation);						// create a new game object
 		
 	m_objects.push_back(pObject);																						// push it to the back of the list
 		
 	if (m_pWorld) {																										// check if the world object is valid		
-		m_pWorld->addRigidBody(pObject->GetRigidBody());																// add the object's rigid body to the world
+		//m_pWorld->addRigidBody(pObject->GetRigidBody());																// Ch8 REMOVED add the object's rigid body to the world
+		m_pWorld->addRigidBody(pObject->GetRigidBody(), group, mask);													// Ch8 ADDED
 	}
 	return pObject;
 }
