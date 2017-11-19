@@ -56,7 +56,9 @@ public:
 	// drawing functions
 	//void DrawBox(const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));	
 	//void DrawBox(btScalar* transform, const btVector3 &halfSize, const btVector3 &color = btVector3(1.0f, 1.0f, 1.0f));
-	void DrawBox(const btVector3 &halfSize);
+	void DrawBox(const btVector3 &halfSize);	
+	void DrawSphere(const btScalar &radius);														// Ch 7.1
+	void DrawCylinder(const btScalar &radius, const btScalar &halfHeight);							// Ch 7.1
 	void DrawShape(btScalar* transform, const btCollisionShape* pShape, const btVector3 &color);
 
 	// object functions

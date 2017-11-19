@@ -59,6 +59,9 @@ void BasicDemo::CreateObjects() {
 	m_pTrigger->setWorldTransform(triggerTrans);	
 	m_pTrigger->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);														// 6.2 - flag the trigger to ignore contact responses	
 	m_pWorld->addCollisionObject(m_pTrigger);																						// 6.2 - add the trigger to our world
+																															
+	CreateGameObject(new btSphereShape(1.0f), 1.0, btVector3(0.7f, 0.7f, 0.0f), btVector3(-5.0, 10.0f, 0.0f));						// Ch 7.1 - create a yellow sphere
+	CreateGameObject(new btCylinderShape(btVector3(1, 1, 1)), 1.0, btVector3(0.0f, 0.7f, 0.0f), btVector3(-2, 10.0f, 0.0f));		// Ch 7.1 - create a green cylinder
 }
 
 // Ch 6.2
