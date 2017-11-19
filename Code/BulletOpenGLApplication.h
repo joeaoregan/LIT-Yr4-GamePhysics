@@ -62,9 +62,13 @@ public:
 	void ShootBox(const btVector3 &direction);
 	void DestroyGameObject(btRigidBody* pBody);
 
-	// picking functions
+	// Ch5.1 picking functions
 	btVector3 GetPickingRay(int x, int y);
 	bool Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output);
+	
+	// Ch5.2 constraint functions
+	void CreatePickingConstraint(int x, int y);
+	void RemovePickingConstraint();
 
 protected:
 	// camera control
@@ -92,5 +96,10 @@ protected:
 	GameObjects m_objects;																			// an array of our game objects
 
 	DebugDrawer* m_pDebugDrawer;																	// 4.2 - debug renderer
+	
+	// Ch5.2 constraint variables
+	btRigidBody* m_pPickedBody;																		// the body we picked up
+	btTypedConstraint*  m_pPickConstraint;															// the constraint the body is attached to
+	btScalar m_oldPickingDist;																		// the distance from the camera to the hit point (so we can move the object up, down, left and right from our view)
 };
 #endif
