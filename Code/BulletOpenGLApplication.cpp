@@ -549,8 +549,9 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 	m_pairsLastUpdate = pairsThisUpdate;																				// in the next iteration we'll want to compare against the pairs we found in this iteration
 }
 
-// Ch 6.1
+// Ch 6.1 Added, 6.2 Removed
 void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
+	/*
 	// find the two colliding objects
 	GameObject* pObj0 = FindGameObject(pBody0);
 	GameObject* pObj1 = FindGameObject(pBody1);
@@ -560,10 +561,12 @@ void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody *
 	// set their colors to white
 	pObj0->SetColor(btVector3(1.0,1.0,1.0));
 	pObj1->SetColor(btVector3(1.0,1.0,1.0));
+	*/
 }
 
-// Ch 6.1
+// Ch 6.1 Added, 6.2 Removed
 void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
+	/*
 	// get the two separating objects
 	GameObject* pObj0 = FindGameObject((btRigidBody*)pBody0);
 	GameObject* pObj1 = FindGameObject((btRigidBody*)pBody1);
@@ -573,6 +576,7 @@ void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody 
 	// set their colors to black
 	pObj0->SetColor(btVector3(0.0,0.0,0.0));
 	pObj1->SetColor(btVector3(0.0,0.0,0.0));
+	*/
 }
 
 // Ch 6.1
