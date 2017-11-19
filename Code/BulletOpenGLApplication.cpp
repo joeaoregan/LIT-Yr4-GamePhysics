@@ -340,8 +340,19 @@ void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionSh
 		break;
 	}
 	case CONVEX_HULL_SHAPE_PROXYTYPE: DrawConvexHull(pShape); break;													// Ch 7.2 - draw the convex hull shape...whatever it is
+	case COMPOUND_SHAPE_PROXYTYPE: {																					// Ch 7.3 - P95 (106)
+		const btCompoundShape* pCompound = static_cast<const btCompoundShape*>(pShape);									// get the shape		
+		for (int i = 0; i < pCompound->getNumChildShapes(); ++i) {														// iterate through the children
+			// get the transform of the sub-shape
+			btTransform thisTransform = pCompound->getChildTransform(i);
+			btScalar thisMatrix[16];
+			thisTransform.getOpenGLMatrix(thisMatrix);				
+			DrawShape(thisMatrix, pCompound->getChildShape(i), color);													// call drawshape recursively for each child. The matrix stack takes care of positioning/orienting the object for us
+		}
+		break;
+	}
 
-	default: break;																											// unsupported type
+	default: break;																										// unsupported type
 	}
 		
 	glPopMatrix();																										// pop the stack

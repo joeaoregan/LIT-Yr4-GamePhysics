@@ -73,6 +73,24 @@ void BasicDemo::CreateObjects() {
 	btConvexHullShape* pShape = new btConvexHullShape(&points[0].getX(),5);															// Ch 7.2 - create our convex hull	
 	pShape->initializePolyhedralFeatures();																							// Ch 7.2 - initialize the object as a polyhedron	
 	CreateGameObject(pShape, 1.0, btVector3(1,1,1), btVector3(5, 15, 0));															// Ch 7.2 - create the game object using our convex hull shape
+
+	// Ch 7.3 - Create two shapes for the rod and the load
+	btCollisionShape* pRod = new btBoxShape(btVector3(1.5f, 0.2f, 0.2f));
+	btCollisionShape* pLoad = new btSphereShape(0.5f);
+	// create a transform we'll use to set each object's position
+	btTransform trans;
+	trans.setIdentity();
+	btCompoundShape* pCompound = new btCompoundShape();																				// Ch 7.3 - Create our compound shape
+	// add the rod
+	pCompound->addChildShape(trans, pRod);
+	trans.setOrigin(btVector3(-1.75f, 0.0f, 0.0f));
+	// add the top load
+	pCompound->addChildShape(trans, pLoad);
+	trans.setIdentity();
+	// add the bottom load
+	trans.setOrigin(btVector3(1.75f, 0.0f, 0.0f));
+	pCompound->addChildShape(trans, pLoad);	
+	CreateGameObject(pCompound, 2.0f, btVector3(0.8,0.4,0.1), btVector3(-4, 10.0f, 0.0f));											// Ch 7.3 - Create a game object using the compound shape
 }
 
 // Ch 6.2
