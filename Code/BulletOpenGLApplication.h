@@ -5,6 +5,8 @@
 #include <GL/GL.h>
 #include <GL/freeglut.h>
 #include "BulletDynamics/Dynamics/btDynamicsWorld.h"
+#include "BulletCollision/CollisionShapes/btConvexPolyhedron.h"										// Ch 7.2 - includes for convex hulls
+#include "BulletCollision/CollisionShapes/btShapeHull.h"											// Ch 7.2 - includes for convex hulls
 #include "OpenGLMotionState.h"																		// include our custom Motion State object
 #include "DebugDrawer.h"																			// Ch 4.2 - Our custom debug renderer
 #include "GameObject.h"
@@ -59,6 +61,7 @@ public:
 	void DrawBox(const btVector3 &halfSize);	
 	void DrawSphere(const btScalar &radius);														// Ch 7.1
 	void DrawCylinder(const btScalar &radius, const btScalar &halfHeight);							// Ch 7.1
+	void DrawConvexHull(const btCollisionShape* shape);												// Ch 7.2
 	void DrawShape(btScalar* transform, const btCollisionShape* pShape, const btVector3 &color);
 
 	// object functions

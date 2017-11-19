@@ -339,8 +339,9 @@ void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionSh
 		DrawCylinder(radius,halfHeight);																				// draw the cylinder
 		break;
 	}
-	default:		
-		break;																											// unsupported type
+	case CONVEX_HULL_SHAPE_PROXYTYPE: DrawConvexHull(pShape); break;													// Ch 7.2 - draw the convex hull shape...whatever it is
+
+	default: break;																											// unsupported type
 	}
 		
 	glPopMatrix();																										// pop the stack
@@ -668,4 +669,37 @@ void BulletOpenGLApplication::DrawCylinder(const btScalar &radius, const btScala
 	glRotatef(-180.0f, 0.0f, 1.0f, 0.0f);	
 	gluDisk(quadObj, 0, radius, slices, stacks);																		// draw the cap on the other end of the cylinder	
 	gluDeleteQuadric(quadObj);																							// don't need the quadric anymore, so remove it  to save memory
+}
+
+// Ch 7.2
+void BulletOpenGLApplication::DrawConvexHull(const btCollisionShape* shape) {
+	// get the polyhedral data from the convex hull
+	const btConvexPolyhedron* pPoly = shape->isPolyhedral() ? ((btPolyhedralConvexShape*) shape)->getConvexPolyhedron() : 0;
+	if (!pPoly) return;
+		
+	glBegin (GL_TRIANGLES);																								// begin drawing triangles
+	
+	// iterate through all faces
+	for (int i = 0; i < pPoly->m_faces.size(); i++) {			
+		int numVerts = pPoly->m_faces[i].m_indices.size();																// get the indices for the face
+		if (numVerts>2)	{	
+			// iterate through all index triplets
+			for (int v = 0; v <pPoly->m_faces[i].m_indices.size()-2;v++) {
+				// grab the three vertices
+				btVector3 v1 = pPoly->m_vertices[pPoly->m_faces[i].m_indices[0]];
+				btVector3 v2 = pPoly->m_vertices[pPoly->m_faces[i].m_indices[v+1]];
+				btVector3 v3 = pPoly->m_vertices[pPoly->m_faces[i].m_indices[v+2]];
+				// calculate the normal
+				btVector3 normal = (v3-v1).cross(v2-v1);
+				normal.normalize ();
+				// draw the triangle
+				glNormal3f(normal.getX(),normal.getY(),normal.getZ());
+				glVertex3f (v1.x(), v1.y(), v1.z());
+				glVertex3f (v2.x(), v2.y(), v2.z());
+				glVertex3f (v3.x(), v3.y(), v3.z());
+			}
+		}
+	}
+	
+	glEnd ();	// done drawing
 }

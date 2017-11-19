@@ -62,6 +62,17 @@ void BasicDemo::CreateObjects() {
 																															
 	CreateGameObject(new btSphereShape(1.0f), 1.0, btVector3(0.7f, 0.7f, 0.0f), btVector3(-5.0, 10.0f, 0.0f));						// Ch 7.1 - create a yellow sphere
 	CreateGameObject(new btCylinderShape(btVector3(1, 1, 1)), 1.0, btVector3(0.0f, 0.7f, 0.0f), btVector3(-2, 10.0f, 0.0f));		// Ch 7.1 - create a green cylinder
+
+	// Ch 7.2 - create a vertex cloud defining a square-based pyramid - P92
+	btVector3 points[5] = {btVector3(-0.5,1,1),
+		btVector3(-0.5,1,-1),
+		btVector3(-0.5,-1,1),
+		btVector3(-0.5,-1,-1),
+		btVector3(1,0,0)};
+	
+	btConvexHullShape* pShape = new btConvexHullShape(&points[0].getX(),5);															// Ch 7.2 - create our convex hull	
+	pShape->initializePolyhedralFeatures();																							// Ch 7.2 - initialize the object as a polyhedron	
+	CreateGameObject(pShape, 1.0, btVector3(1,1,1), btVector3(5, 15, 0));															// Ch 7.2 - create the game object using our convex hull shape
 }
 
 // Ch 6.2
