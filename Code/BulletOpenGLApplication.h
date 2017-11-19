@@ -9,8 +9,15 @@
 #include "DebugDrawer.h"																			// Ch 4.2 - Our custom debug renderer
 #include "GameObject.h"
 #include <vector>
+#include <set>																						// Ch 5.2
+#include <iterator>																					// Ch 5.2
+#include <algorithm>																				// Ch 5.2
 
 typedef std::vector<GameObject*> GameObjects;														// a convenient typedef to reference an STL vector of GameObjects
+
+// convenient typedefs for collision events
+typedef std::pair<const btRigidBody*, const btRigidBody*> CollisionPair;							// Ch 6.1
+typedef std::set<CollisionPair> CollisionPairs;														// Ch 6.1
 
 // struct to store our raycasting results
 struct RayResult {
@@ -61,14 +68,20 @@ public:
 
 	void ShootBox(const btVector3 &direction);
 	void DestroyGameObject(btRigidBody* pBody);
+	GameObject* FindGameObject(btRigidBody* pBody);													// Ch 6.1
 
-	// Ch5.1 picking functions
+	// C h5.1 picking functions
 	btVector3 GetPickingRay(int x, int y);
 	bool Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output);
 	
-	// Ch5.2 constraint functions
+	// Ch 5.2 constraint functions
 	void CreatePickingConstraint(int x, int y);
 	void RemovePickingConstraint();
+
+	// Ch 6.1 collision event functions
+	void CheckForCollisionEvents();
+	virtual void CollisionEvent(btRigidBody* pBody0, btRigidBody * pBody1);
+	virtual void SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1);
 
 protected:
 	// camera control
@@ -97,9 +110,11 @@ protected:
 
 	DebugDrawer* m_pDebugDrawer;																	// 4.2 - debug renderer
 	
-	// Ch5.2 constraint variables
-	btRigidBody* m_pPickedBody;																		// the body we picked up
-	btTypedConstraint*  m_pPickConstraint;															// the constraint the body is attached to
-	btScalar m_oldPickingDist;																		// the distance from the camera to the hit point (so we can move the object up, down, left and right from our view)
+	// Ch 5.2 constraint variables
+	btRigidBody* m_pPickedBody;																		// Ch 5.2 - the body we picked up
+	btTypedConstraint*  m_pPickConstraint;															// Ch 5.2 - the constraint the body is attached to
+	btScalar m_oldPickingDist;																		// Ch 5.2 - the distance from the camera to the hit point (so we can move the object up, down, left and right from our view)
+
+	CollisionPairs m_pairsLastUpdate;																// Ch 6.1 - collision event variables
 };
 #endif
