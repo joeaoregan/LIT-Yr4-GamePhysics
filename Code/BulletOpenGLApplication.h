@@ -70,9 +70,10 @@ public:
 	void DestroyGameObject(btRigidBody* pBody);
 	GameObject* FindGameObject(btRigidBody* pBody);													// Ch 6.1
 
-	// C h5.1 picking functions
+	// Ch 5.1 picking functions
 	btVector3 GetPickingRay(int x, int y);
-	bool Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output);
+	//bool Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output);								// Removed Ch 6.3
+	bool Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output, bool includeStatic = false);	// Ch 6.3
 	
 	// Ch 5.2 constraint functions
 	void CreatePickingConstraint(int x, int y);

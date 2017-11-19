@@ -391,7 +391,8 @@ void BulletOpenGLApplication::ShootBox(const btVector3 &direction) {
 }
 
 // Ch5.1
-bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output) {
+//bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output) {					// Ch 6.3 Changed
+bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output, bool includeStatic) {	// Ch 6.3
 	if (!m_pWorld) return false;
 		
 	// get the picking ray from where we clicked
@@ -406,8 +407,10 @@ bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVe
 	if (rayCallback.hasHit()) {		
 		btRigidBody* pBody = (btRigidBody*)btRigidBody::upcast(rayCallback.m_collisionObject);							// if so, get the rigid body we hit
 		if (!pBody) return false;
-				
-		if (pBody->isStaticObject() || pBody->isKinematicObject()) return false;										// prevent us from picking objects like the ground plane
+			
+		// prevent us from picking objects like the ground plane
+		if (!includeStatic)																								// skip this check if we want it to hit static objects
+			if (pBody->isStaticObject() || pBody->isKinematicObject()) return false;									// prevent us from picking objects like the ground plane
 	    
 		// set the result data
 		output.pBody = pBody;
