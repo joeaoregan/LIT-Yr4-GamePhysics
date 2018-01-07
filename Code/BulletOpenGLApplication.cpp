@@ -2,7 +2,9 @@
 	Ch 4.2 - toggle wireframe debug drawing & toggle AABB debug drawing
 */
 
+#include "Joe/Audio.h"
 #include "BulletOpenGLApplication.h"
+#include <iostream>
 
 #define RADIANS_PER_DEGREE 0.01745329f														// Constant for 3D Math
 #define CAMERA_STEP_SIZE 5.0f																// Constant for camera speed
@@ -69,9 +71,11 @@ void BulletOpenGLApplication::Initialize() {
 
 void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y) {
 	// This function is called by FreeGLUT whenever generic keys are pressed down.
-	switch (key) {	
-		case 'z': ZoomCamera(+CAMERA_STEP_SIZE); break;										// 'z' zooms in
-		case 'x': ZoomCamera(-CAMERA_STEP_SIZE); break;										// 'x' zoom out
+	switch (key) {
+		//case 'z': ZoomCamera(+CAMERA_STEP_SIZE); break;									// 'z' zooms in
+		case 'z': RotateCamera(m_cameraPitch, +CAMERA_STEP_SIZE); break; break;				// 'z' rotate camera up
+		//case 'x': ZoomCamera(-CAMERA_STEP_SIZE); break;									// 'x' zoom out
+		case 'x': RotateCamera(m_cameraPitch, -CAMERA_STEP_SIZE); break;					// 'x' rotate camera down
 		case 'w': m_pDebugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawWireframe); break;	// Ch 4.2 - toggle wireframe debug drawing
 		case 'b': m_pDebugDrawer->ToggleDebugFlag(btIDebugDraw::DBG_DrawAabb); break;		// Ch 4.2 - toggle AABB debug drawing
 		case 'd': {																			// Ch 5.1
@@ -81,6 +85,10 @@ void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y) {
 			DestroyGameObject(result.pBody);												// destroy the corresponding game object
 			break;
 		}
+		// Audio 
+		case 'p': Audio::Instance()->playPauseMusic(); break;								// JOR Pause or play the music
+		case '.': Audio::Instance()->musicForward(); break;									// JOR Skip music track backwards
+		case ',': Audio::Instance()->musicBack(); break;									// JOR Skip music track forwards
 	}
 }
 
@@ -91,13 +99,15 @@ void BulletOpenGLApplication::Special(int key, int x, int y) {
 	switch (key) {
 		// the arrow keys rotate the camera up/down/left/right
 		case GLUT_KEY_LEFT:
-			RotateCamera(m_cameraYaw, +CAMERA_STEP_SIZE); break;
+			RotateCamera(m_cameraYaw, +CAMERA_STEP_SIZE); break;			// Zoom in
 		case GLUT_KEY_RIGHT:
-			RotateCamera(m_cameraYaw, -CAMERA_STEP_SIZE); break;
+			RotateCamera(m_cameraYaw, -CAMERA_STEP_SIZE); break;			// Zoom out
 		case GLUT_KEY_UP:
-			RotateCamera(m_cameraPitch, +CAMERA_STEP_SIZE); break;
+			//RotateCamera(m_cameraPitch, +CAMERA_STEP_SIZE); break;
+			ZoomCamera(+CAMERA_STEP_SIZE); break;
 		case GLUT_KEY_DOWN:
-			RotateCamera(m_cameraPitch, -CAMERA_STEP_SIZE); break;
+			//RotateCamera(m_cameraPitch, -CAMERA_STEP_SIZE); break;
+			ZoomCamera(-CAMERA_STEP_SIZE); break;
 	}
 }
 
@@ -136,8 +146,19 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y) {
 			else RemovePickingConstraint();													// button up, remove the picking constraint when we release the LMB
 			break;
 		}
-		case 2: if (state == 0) ShootBox(GetPickingRay(x, y)); break;						// Ch5.1right mouse button, pressed down, shoot a box
+		case 2: if (state == 0) {
+			std::cout << "Right Button Pressed" << std::endl;
+			Audio::Instance()->playFX("swoosh1FX");											// JOR Play swoosh sound 1 from map using ID 
+			//Audio::Instance()->Fire1();													// JOR Play swoosh sound 1
+			ShootBox(GetPickingRay(x, y)); break;											// Ch5.1right mouse button, pressed down, shoot a box
 		}
+		case 1: if (state == 0) {
+			std::cout << "Middle Button Pressed" << std::endl;
+			Audio::Instance()->playFX("swoosh2FX");											// JOR Play swoosh sound 2 from map using ID 
+			//Audio::Instance()->Fire2();													// JOR Play swoosh sound 2
+			ShootBall(GetPickingRay(x, y)); break;											// JOR Middle button pressed, shoot a sphere
+		}
+	}
 }
 void BulletOpenGLApplication::PassiveMotion(int x, int y) {}
 
@@ -237,9 +258,7 @@ void BulletOpenGLApplication::DrawBox(const btVector3 &halfSize) {
 	
 	// create the indexes for each triangle, using the vertices above. 
 	// Make it static so we don't waste processing time recreating it over and over again
-	static int indices[36] = {0,1,2,3,2,1,4,0,6,6,0,2,
-								5,1,4,4,1,0,7,3,1,7,1,5,
-								5,4,7,7,4,6,7,2,3,7,6,2 };
+	static int indices[36] = {0,1,2,3,2,1,4,0,6,6,0,2, 5,1,4,4,1,0,7,3,1,7,1,5, 5,4,7,7,4,6,7,2,3,7,6,2 };
 			
 	glBegin(GL_TRIANGLES);																	// start processing vertices as triangles
 	
@@ -280,8 +299,7 @@ void BulletOpenGLApplication::RotateCamera(float &angle, float value) {
 void BulletOpenGLApplication::ZoomCamera(float distance) {	
 	m_cameraDistance -= distance;															// change the distance value	
 	if (m_cameraDistance < 0.1f) m_cameraDistance = 0.1f;									// prevent it from zooming in too far	
-	UpdateCamera();																			// update the camera since we changed the zoom distance
-	
+	UpdateCamera();																			// update the camera since we changed the zoom distance	
 }
 
 void BulletOpenGLApplication::RenderScene() {	
@@ -310,7 +328,6 @@ void BulletOpenGLApplication::UpdateScene(float dt) {
 
 	CheckForCollisionEvents();																// Ch 6. 1 - Check for any new collisions/serparations
 }
-
 
 void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionShape* pShape, const btVector3 &color) {	
 	glColor3f(color.x(), color.y(), color.z());																			// set the color
@@ -359,8 +376,8 @@ void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionSh
 }
 
 //GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, const btQuaternion &initialRotation) { // Ch 8 Removed
-GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, short group, short mask, const btQuaternion &initialRotation) {	// Ch8 Added
-	GameObject* pObject = new GameObject(pShape, mass, color, initialPosition, initialRotation);						// create a new game object
+GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, short group, short mask, const btQuaternion &initialRotation, bool playAudio) {	// Ch8 Added
+	GameObject* pObject = new GameObject(pShape, mass, color, initialPosition, initialRotation, false);					// create a new game object
 		
 	m_objects.push_back(pObject);																						// push it to the back of the list
 		
@@ -407,15 +424,39 @@ btVector3 BulletOpenGLApplication::GetPickingRay(int x, int y) {
 }
 
 // Ch5.1
-void BulletOpenGLApplication::ShootBox(const btVector3 &direction) {	
+void BulletOpenGLApplication::ShootBox(const btVector3 &direction) {
 	GameObject* pObject = CreateGameObject(new btBoxShape(btVector3(1, 1, 1)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition);	// create a new box object
-		
-	// calculate the velocity
-	btVector3 velocity = direction; 
+								
+	btVector3 velocity = direction;																									// calculate the velocity
 	velocity.normalize();
 	velocity *= 25.0f;
-			
-	pObject->GetRigidBody()->setLinearVelocity(velocity);																// set the linear velocity of the box
+
+	pObject->SetType(BULLET);																										// JOR Set the type as bullet
+
+	pObject->GetRigidBody()->setLinearVelocity(velocity);																			// set the linear velocity of the box
+}
+
+void BulletOpenGLApplication::ShootBall(const btVector3 &direction) {
+
+	// create game object (shape, mass, colour, initial position, group, mask, rotation)
+
+	//GameObject* pObject = CreateGameObject(new btBoxShape(btVector3(.5, .5, .5)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition);	// create a new box object
+	GameObject* pObject = CreateGameObject(new btSphereShape(0.5),
+		1.0f,																															// Mass
+		btVector3(1.0f, 1.0f, 0.0f),																									// Colour
+		m_cameraPosition, 																												// Start at Cameras position
+		COLGROUP_BULLET,																												// Collision groups are box and bullet
+		COLGROUP_BOX);
+
+	pObject->SetPlayAudio(false);
+	//pObject->SetName("bullet");
+	pObject->SetType(BULLET);																											// JOR Set the type as bullet
+
+	btVector3 velocity = direction;																										// calculate the velocity
+	velocity.normalize();
+	velocity *= 25.0f;
+
+	pObject->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the box
 }
 
 // Ch5.1
@@ -541,14 +582,13 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 	for (int i = 0; i < m_pDispatcher->getNumManifolds(); ++i) {
 		btPersistentManifold* pManifold = m_pDispatcher->getManifoldByIndexInternal(i);									// get the manifold
 		
-		// ignore manifolds that have no contact points.
-		if (pManifold->getNumContacts() > 0) {
+		// ignore manifolds that have no contact points.	
+		if (pManifold->getNumContacts() > 0) {																			// Number of contacts detected between 2 bodies
 			// get the two rigid bodies involved in the collision
-			const btRigidBody* pBody0 = static_cast<const btRigidBody*>(pManifold->getBody0());
-			const btRigidBody* pBody1 = static_cast<const btRigidBody*>(pManifold->getBody1());
+			const btRigidBody* pBody0 = static_cast<const btRigidBody*>(pManifold->getBody0());							// Body in object pair that passed broad phase
+			const btRigidBody* pBody1 = static_cast<const btRigidBody*>(pManifold->getBody1());							// Body in object pair that passed broad phase
     
-			// always create the pair in a predictable order
-			// (use the pointer value..)
+			// always create the pair in a predictable order (use the pointer value..)
 			bool const swapped = pBody0 > pBody1;
 			const btRigidBody* pSortedBodyA = swapped ? pBody1 : pBody0;
 			const btRigidBody* pSortedBodyB = swapped ? pBody0 : pBody1;
@@ -559,12 +599,12 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 
 			// if this pair doesn't exist in the list from the previous update, it is a new pair and we must send a collision event
 			if (m_pairsLastUpdate.find(thisPair) == m_pairsLastUpdate.end()) {
-				CollisionEvent((btRigidBody*)pBody0, (btRigidBody*)pBody1);
+				CollisionEvent((btRigidBody*)pBody0, (btRigidBody*)pBody1);												// Collision event detected
 			}
 		}
 	}
 		
-	CollisionPairs removedPairs;	// create another list for pairs that were removed this update
+	CollisionPairs removedPairs;																						// create another list for pairs that were removed this update
 	
 	// this handy function gets the difference beween two sets. It takes the difference between
 	// collision pairs from the last update, and this update and pushes them into the removed pairs list
@@ -574,7 +614,7 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 	
 	// iterate through all of the removed pairs sending separation events for them
 	for (CollisionPairs::const_iterator iter = removedPairs.begin(); iter != removedPairs.end(); ++iter) {
-		SeparationEvent((btRigidBody*)iter->first, (btRigidBody*)iter->second);
+		SeparationEvent((btRigidBody*)iter->first, (btRigidBody*)iter->second);											// Separation event detected
 	}
 		
 	m_pairsLastUpdate = pairsThisUpdate;																				// in the next iteration we'll want to compare against the pairs we found in this iteration
@@ -582,22 +622,22 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 
 // Ch 6.1 Added, 6.2 Removed
 void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
-	/*
+	
 	// find the two colliding objects
-	GameObject* pObj0 = FindGameObject(pBody0);
-	GameObject* pObj1 = FindGameObject(pBody1);
+	//GameObject* pObj0 = FindGameObject(pBody0);
+	//GameObject* pObj1 = FindGameObject(pBody1);
 		
-	if (!pObj0 || !pObj1) return;																						// exit if we didn't find anything
+	//if (!pObj0 || !pObj1) return;																						// exit if we didn't find anything
+
 
 	// set their colors to white
-	pObj0->SetColor(btVector3(1.0,1.0,1.0));
-	pObj1->SetColor(btVector3(1.0,1.0,1.0));
-	*/
+	//pObj0->SetColor(btVector3(1.0,1.0,1.0));
+	//pObj1->SetColor(btVector3(1.0,1.0,1.0));
 }
 
 // Ch 6.1 Added, 6.2 Removed
 void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
-	/*
+	
 	// get the two separating objects
 	GameObject* pObj0 = FindGameObject((btRigidBody*)pBody0);
 	GameObject* pObj1 = FindGameObject((btRigidBody*)pBody1);
@@ -605,9 +645,32 @@ void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody 
 	if (!pObj0 || !pObj1) return;																						// exit if we didn't find anything
 
 	// set their colors to black
-	pObj0->SetColor(btVector3(0.0,0.0,0.0));
-	pObj1->SetColor(btVector3(0.0,0.0,0.0));
+	//pObj0->SetColor(btVector3(0.0,0.0,0.0));
+	//pObj1->SetColor(btVector3(0.0,0.0,0.0));
+	
+
+	//DestroyGameObject(pBody0);	// destroys all collidable objects
+
+	/*
+	//if (!pObj1->GetPlayAudio() || !pObj0->GetPlayAudio()) {
+	if (!pObj1->GetPlayAudio()) {
+		//if(!pObj0->GetPlayAudio())
+
+		//Audio::Instance()->Fire1();
+		Audio::Instance()->playFX("gunfireFX");
+
+		pObj0->SetPlayAudio(true);
+		pObj1->SetPlayAudio(true);
+	}
 	*/
+	if (pObj0->GetType() == BULLET) {
+		Audio::Instance()->playFX("gunfireFX");
+		DestroyGameObject(pObj0->GetRigidBody());
+	}
+	if (pObj1->GetType() == BULLET) {
+		Audio::Instance()->playFX("gunfireFX");
+		DestroyGameObject(pObj1->GetRigidBody());
+	}
 }
 
 // Ch 6.1

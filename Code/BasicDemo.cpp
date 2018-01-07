@@ -133,12 +133,15 @@ void BasicDemo::Keyboard(unsigned char key, int x, int y) {
 		case 'e': {		
 			if (m_pExplosion || !m_bCanExplode) break;																// don't create a new explosion if one already exists or we haven't released the key, yet		
 			m_bCanExplode = false;																					// don't let us create another explosion until the key is released																				
+
 			// create a collision object for our explosion
 			m_pExplosion = new btCollisionObject();
 			m_pExplosion->setCollisionShape(new btSphereShape(3.0f));
+
 			// get the position that we clicked
 			RayResult result;
 			Raycast(m_cameraPosition, GetPickingRay(x, y), result, true);
+
 			// create a transform from the hit point
 			btTransform explodeTrans;
 			explodeTrans.setIdentity();

@@ -1,6 +1,8 @@
 #ifndef _BULLETOPENGLAPP_H_
 #define _BULLETOPENGLAPP_H_
 
+//#include "Joe/Audio.h"	// JOR
+
 #include <Windows.h>
 #include <GL/GL.h>
 #include <GL/freeglut.h>
@@ -14,6 +16,7 @@
 #include <set>																						// Ch 5.2
 #include <iterator>																					// Ch 5.2
 #include <algorithm>																				// Ch 5.2
+
 
 typedef std::vector<GameObject*> GameObjects;														// a convenient typedef to reference an STL vector of GameObjects
 
@@ -32,7 +35,9 @@ enum CollisionGroups {
 	COLGROUP_NONE = 0,
 	COLGROUP_STATIC = 1 << 0,
 	COLGROUP_BOX = 1 << 1,
-	COLGROUP_SPHERE = 1 << 2
+	COLGROUP_SPHERE = 1 << 2,
+
+	COLGROUP_BULLET = 1 << 3	// JOR
 };
 
 class BulletOpenGLApplication {
@@ -79,9 +84,11 @@ public:
 		const btVector3 &initialPosition = btVector3(0.0f, 0.0f, 0.0f),
 		short int group = -1,																		// Ch 8
 		short int mask = -1,																		// Ch 8
-		const btQuaternion &initialRotation = btQuaternion(0, 0, 1, 1));
+		const btQuaternion &initialRotation = btQuaternion(0, 0, 1, 1), 
+		bool playAudio = false);																	// JOR Play sound effect, initially set false
 
 	void ShootBox(const btVector3 &direction);
+	void ShootBall(const btVector3 &direction);
 	void DestroyGameObject(btRigidBody* pBody);
 	GameObject* FindGameObject(btRigidBody* pBody);													// Ch 6.1
 

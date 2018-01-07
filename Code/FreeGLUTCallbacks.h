@@ -29,6 +29,13 @@ static void IdleCallback() {
 }
 static void MouseCallback(int button, int state, int x, int y) {
 	g_pApp->Mouse(button, state, x, y);
+	/*
+	// JOR
+	switch(button) {		
+		case 2: if (state == 0) ShootBox(GetPickingRay(x, y)); break;						// Ch5.1right mouse button, pressed down, shoot a box
+		case 1: if (state == 0) ShootBall(GetPickingRay(x, y)); break;						// JOR Middle button pressed, shoot a sphere
+	}
+	*/
 }
 static void MotionCallback(int x,int y) {
 	g_pApp->Motion(x, y);
@@ -37,8 +44,7 @@ static void DisplayCallback(void) {
 	g_pApp->Display();
 }
 
-// our custom-built 'main' function, which accepts a reference to a 
-// BulletOpenGLApplication object.
+// our custom-built 'main' function, which accepts a reference to a  BulletOpenGLApplication object.
 int glutmain(int argc, char **argv, int width, int height, const char* title, BulletOpenGLApplication* pApp) {    
 	g_pApp = pApp;																	// store the application object so we can access it globally
 

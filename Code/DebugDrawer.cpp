@@ -6,8 +6,7 @@
 #include "DebugDrawer.h"
 #include "BulletOpenGLApplication.h"
 
-void DebugDrawer::drawLine(const btVector3 &from,const btVector3 &to, const btVector3 &color)
-{
+void DebugDrawer::drawLine(const btVector3 &from,const btVector3 &to, const btVector3 &color) {
 	// draws a simple line of pixels between points.
 
 	// use the GL_LINES primitive to draw lines
@@ -18,8 +17,7 @@ void DebugDrawer::drawLine(const btVector3 &from,const btVector3 &to, const btVe
 	glEnd();
 }
 
-void DebugDrawer::drawContactPoint(const btVector3 &pointOnB, const btVector3 &normalOnB, btScalar distance, int lifeTime, const btVector3 &color)
-{
+void DebugDrawer::drawContactPoint(const btVector3 &pointOnB, const btVector3 &normalOnB, btScalar distance, int lifeTime, const btVector3 &color) {
 	// draws a line between two contact points
 	btVector3 const startPoint = pointOnB;
 	btVector3 const endPoint = pointOnB + normalOnB * distance;

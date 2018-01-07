@@ -1,6 +1,10 @@
 *.vcxproj
 *.vcxproj.*
 
+# Ignore added dlls for SDL and Audio files for effects and music
+*.dll
+*.wav
+
 # Prerequisites
 *.d
 
