@@ -106,7 +106,7 @@ void JoeScene::CreateObjects() {
 	*/
 
 
-	// create a vertex cloud defining a square-based pyramid
+	// create a vertex cloud defining a square-based pyramid (used as top of towers)
 	btVector3 points[5] = { btVector3(-0.5,3,3),
 		btVector3(-0.5,3,-3),
 		btVector3(-0.5,-3,3),
@@ -122,7 +122,7 @@ void JoeScene::CreateObjects() {
 	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(18.75, 11, 2.25));
 	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(18.75, 11, 29.25));
 
-
+	// Use stacks of cylinders as towers
 	for (int i = 0; i < 11; i++) {
 		// create a cylinder
 		CreateGameObject(new btCylinderShape(btVector3(2.5, .5, 1)),
@@ -162,7 +162,7 @@ void JoeScene::CreateObjects() {
 			btQuaternion(0, 1, 0, .25));
 	}
 
-	// create 25 boxes and spheres in a 5x5 stack formation 
+	// create boxes to make up the four walls
 	//float yPos = 0;
 	for (int i = 0; i < 55; i++) {
 		//float xPos = -5 + 2 * (float)(i % BLOCKS_IN_ROW);														// Calculate x position for the object (5 columns)

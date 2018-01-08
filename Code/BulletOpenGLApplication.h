@@ -88,7 +88,8 @@ public:
 		bool playAudio = false);																	// JOR Play sound effect, initially set false
 
 	void ShootBox(const btVector3 &direction);
-	void ShootBall(const btVector3 &direction);
+	void ShootBall(const btVector3 &direction);														// JOR
+	void ShootArrow(const btVector3 &direction);													// JOR
 	void DestroyGameObject(btRigidBody* pBody);
 	GameObject* FindGameObject(btRigidBody* pBody);													// Ch 6.1
 

@@ -152,7 +152,8 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y) {
 			std::cout << "Right Button Pressed" << std::endl;
 			Audio::Instance()->playFX("swoosh1FX");											// JOR Play swoosh sound 1 from map using ID 
 			//Audio::Instance()->Fire1();													// JOR Play swoosh sound 1
-			ShootBox(GetPickingRay(x, y)); break;											// Ch5.1right mouse button, pressed down, shoot a box
+			//ShootBox(GetPickingRay(x, y)); break;											// Ch5.1right mouse button, pressed down, shoot a box
+			ShootArrow(GetPickingRay(x, y)); break;											// JOR Right mouse button pressed, shoot arrow
 		}
 		case 1: if (state == 0) {
 			std::cout << "Middle Button Pressed" << std::endl;
@@ -514,6 +515,57 @@ void BulletOpenGLApplication::ShootBall(const btVector3 &direction) {
 	pObject->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the box
 }
 
+void BulletOpenGLApplication::ShootArrow(const btVector3 &direction) {
+
+	// create game object (shape, mass, colour, initial position, group, mask, rotation)
+
+	GameObject* pBox1 = CreateGameObject(new btBoxShape(btVector3(0.1, 0.05, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0, -0.2, 3.75));	// create a new box object
+	GameObject* pBox2 = CreateGameObject(new btBoxShape(btVector3(0.1, 0.05, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0, 0.2, 3.75));	// create a new box object
+	GameObject* pBox3 = CreateGameObject(new btBoxShape(btVector3(0.05, 0.1, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(-0.2, 0, 3.75));	// create a new box object
+	GameObject* pBox4 = CreateGameObject(new btBoxShape(btVector3(0.05, 0.1, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0.2, 0, 3.75));	// create a new box object
+
+	// Arrowhead
+	btVector3 points[5] = { btVector3(-0.25,0.25,0.25),
+		btVector3(-0.25,0.25,-0.25),
+		btVector3(-0.25,-0.25,0.25),
+		btVector3(-0.25,-0.25,-0.25),
+		btVector3(.75,0,0) };
+	// create our convex hull
+	btConvexHullShape* pShape = new btConvexHullShape(&points[0].getX(), 5);
+	// initialize the object as a polyhedron
+	pShape->initializePolyhedralFeatures();
+
+	// create the game object using our convex hull shape
+	GameObject* pObject = CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), m_cameraPosition, COLGROUP_BULLET, COLGROUP_BOX, btQuaternion(0, 1, 0, -1));
+	
+
+	// Shaft = cylinder
+	GameObject* pObject2 = CreateGameObject(new btCylinderShape(btVector3(.1, 2, 1)),
+		1.0f,
+		btVector3(1,1,1),
+		m_cameraPosition - btVector3(0,0,2),
+		COLGROUP_BULLET,
+		COLGROUP_BOX | COLGROUP_STATIC,
+		btQuaternion(1, 0, 0, -1));
+		//btQuaternion(m_cameraPitch, m_cameraYaw, 0, 1));
+		//btQuaternion(1 + m_cameraPitch, 0, 0, ));
+		//btQuaternion(1,0,0, -1) + btQuaternion(m_cameraPitch, m_cameraYaw,0,1));
+	
+	pObject->SetPlayAudio(false);
+	//pObject->SetName("bullet");
+	pObject->SetType(BULLET);																											// JOR Set the type as bullet
+
+	btVector3 velocity = direction;																										// calculate the velocity
+	velocity.normalize();
+	velocity *= 25.0f;
+
+	pBox1->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
+	pBox2->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
+	pBox3->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
+	pBox4->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
+	pObject->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
+	pObject2->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrow shaft
+}
 // Ch5.1
 //bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output) {					// Ch 6.3 Changed
 bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output, bool includeStatic) {	// Ch 6.3
