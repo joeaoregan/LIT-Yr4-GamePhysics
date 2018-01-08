@@ -24,9 +24,9 @@ std::string arrSoundEffects[NUM_SOUND_FX][3] = {
 */
 std::string arrMusic[NUMBER_OF_SONGS][3] = {
 	// Game
-	{ "Music/joe_riff3.wav", "track1ID", "Music Track 1" },	// Music file 1
-	{ "Music/joe_riff4.wav", "track2ID", "Music Track 2" },	// Music file 2
-	{ "Music/joe_riff5.wav", "track3ID", "Music Track 3" },	// Music file 3
+	{ "Music/joe_riff1.wav", "track1ID", "Music Track 1" },	// Music file 1
+	{ "Music/joe_riff3.wav", "track2ID", "Music Track 2" },	// Music file 2
+	{ "Music/joe_riff4.wav", "track3ID", "Music Track 3" },	// Music file 3
 	{ "Music/joe_riff6.wav", "track4ID", "Music Track 4" },	// Music file 4
 	{ "Music/joe_riff7.wav", "track5ID", "Music Track 5" }	// Music file 5
 };

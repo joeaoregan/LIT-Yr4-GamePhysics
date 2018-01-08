@@ -106,6 +106,9 @@ public:
 	virtual void CollisionEvent(btRigidBody* pBody0, btRigidBody * pBody1);
 	virtual void SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1);
 
+
+	void displayText(float x, float y, int r, int g, int b, const char *string);					// JOR
+
 protected:
 	// camera control
 	btVector3 m_cameraPosition;																		// the camera's current position

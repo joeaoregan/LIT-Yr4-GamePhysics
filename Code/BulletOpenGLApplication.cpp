@@ -6,6 +6,8 @@
 #include "BulletOpenGLApplication.h"
 #include <iostream>
 
+#include "Added/GLDebugFont.h"
+
 #define RADIANS_PER_DEGREE 0.01745329f														// Constant for 3D Math
 #define CAMERA_STEP_SIZE 5.0f																// Constant for camera speed
 
@@ -181,7 +183,16 @@ void BulletOpenGLApplication::Motion(int x, int y) {
 	}
 }
 
-void BulletOpenGLApplication::Display() {}
+void BulletOpenGLApplication::Display() {
+	/*
+	//std::cout << "Test Display" << std::endl;	// Doesn't repeat v.often
+
+	displayText(10, 10, 1, 1, 1, "test");
+	displayText(10, -10, 1, 1, 1, "test");
+	displayText(-10, -10, 1, 1, 1, "test");
+	displayText(-10, 10, 1, 1, 1, "test");
+	*/
+}
 
 void BulletOpenGLApplication::UpdateCamera() {
 	if (m_screenWidth == 0 && m_screenHeight == 0) return;									// exit in erroneous situations	
@@ -321,7 +332,51 @@ void BulletOpenGLApplication::RenderScene() {
 																							// Bullet will figure out what needs to be drawn then call to our DebugDrawer class to do the rendering for us
 }
 
-void BulletOpenGLApplication::UpdateScene(float dt) {	
+
+// JOR
+void BulletOpenGLApplication::displayText(float x, float y, int r, int g, int b, const char *string) {
+	//glColor3f(r, g, b);
+	//glColor3f(0, 0, 0);
+	glColor3f(1, 1, 1);
+	//glRasterPos2f(x, y);
+	glRasterPos3f(x, y, 0);
+	//glRasterPos2f(m_screenWidth + x, y);
+	for (int i = 0; i < strlen(string); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+	}
+}
+
+// JOR - From DemoApplication.cpp
+void DisplayString(int x, int y, char* message) {
+	//glRasterPos3f(btScalar(x), btScalar(y), btScalar(0));
+	glRasterPos3f(10, 10, 20);
+	GLDebugDrawString(x, y, message);
+}
+
+void BulletOpenGLApplication::UpdateScene(float dt) {
+
+	//GL_TextControl* blah = new GL_TextControl;
+	//glRastPos3f(btScalar(20), btScalar(20), btScalar(0));
+	//GLDebugDrawString(20, 20, "test");
+	//btVector3 rgb(1, 1, 1);
+	//GLDebugDrawStringInternal(20, 20, "test", rgb);
+
+	//std::cout << "Test Display" << std::endl;	// Doesn't repeat v.often
+	// Displays in scene space, not window
+	displayText(10, 10, 1, 1, 1, "Hit The Castle");	// Works
+	//displayText(0, 11, 0, 0, 0, "Hit The Castle");
+
+	/*
+	DisplayString(10, 10, "test2");
+	DisplayString(10, -10, "test2");
+	DisplayString(-10, 10, "test2");
+	DisplayString(-10, -10, "test2");
+	*/
+	//displayProfileString(0, 0, "test");
+	//displayText(10, -10, 1, 1, 1, "test");
+	//displayText(-10, -10, 1, 1, 1, "test");
+	//displayText(-10, 10, 1, 1, 1, "test");
+
 	if (m_pWorld) {																			// check if the world object exists		
 		m_pWorld->stepSimulation(dt);														// step the simulation through time. This is called every update and the amount of elasped time was determined back in ::Idle() by our clock object.
 	}

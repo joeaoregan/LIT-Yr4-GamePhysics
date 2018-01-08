@@ -36,6 +36,7 @@ GameObject::GameObject(btCollisionShape* pShape, float mass, const btVector3 &co
 	transform.setIdentity();
 	transform.setOrigin(initialPosition);
 	transform.setRotation(initialRotation);
+	//transform.setRotation(btQuaternion(.5, .5, .5, .25));
 
 	m_pMotionState = new OpenGLMotionState(transform);											// create the motion state from the initial transform
 

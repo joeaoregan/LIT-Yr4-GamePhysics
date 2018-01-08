@@ -7,6 +7,8 @@
 //#include <SDL_mixer.h>
 #include "JoeScene.h"
 
+//#include "GLDebugFont.h"
+
 #define BLOCKS_IN_ROW 11
 
 //Mix_Music  *gMusic = NULL;
@@ -16,6 +18,16 @@
 void InitSDLAudio();
 //bool InitSDL();
 
+/*
+void displayText(float x, float y, int r, int g, int b, const char *string) {
+	//glColor3f(r, g, b);
+	glColor3f(0, 0, 0);
+	glRasterPos2f(x, y);
+	for (int i = 0; i < strlen(string); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
+	}
+}
+*/
 JoeScene::JoeScene() : BulletOpenGLApplication() {}
 
 void JoeScene::InitializePhysics() {
@@ -84,17 +96,84 @@ void JoeScene::CreateObjects() {
 		0, btVector3(0.2f, 0.9f, 0.6f), btVector3(0.0f, 0.0f, 0.0f),
 		COLGROUP_STATIC, COLGROUP_BOX | COLGROUP_SPHERE);										// The ground plane can collide with boxes, spheres and bullets (which are boxes and spheres)
 
+	float xPos = 0, yPos =0;
+	/*
+	btVector3 positions[4];
+	positions[0]  (xPos, yPos, 4);																	// create a btVector3 for the position
+	positions[1](xPos, yPos, 28);																	// create a btVector3 for the position
+	positions[2](-7, yPos, xPos + 11);																// create a btVector3 for the position
+	positions[3](17, yPos, xPos + 11);																// create a btVector3 for the position
+	*/
+
+
+	// create a vertex cloud defining a square-based pyramid
+	btVector3 points[5] = { btVector3(-0.5,3,3),
+		btVector3(-0.5,3,-3),
+		btVector3(-0.5,-3,3),
+		btVector3(-0.5,-3,-3),
+		btVector3(1,0,0) };
+	// create our convex hull
+	btConvexHullShape* pShape = new btConvexHullShape(&points[0].getX(), 5);
+	// initialize the object as a polyhedron
+	pShape->initializePolyhedralFeatures();
+	// create the game object using our convex hull shape
+	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(-8.33, 11, 2.25));
+	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(-8.33, 11, 29.25));
+	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(18.75, 11, 2.25));
+	CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), btVector3(18.75, 11, 29.25));
+
+
+	for (int i = 0; i < 11; i++) {
+		// create a cylinder
+		CreateGameObject(new btCylinderShape(btVector3(2.5, .5, 1)),
+			1.0f,																					// Mass
+			//btVector3(1.0f, 0.2f, i % 2),															// Alternate colors
+			//btVector3(1, 1, 1),																	// Colour
+			btVector3(1 - (.1 * (i % 2)), 1 - (.1 * (i % 2)), 1 - (.1 * (i % 2))),
+			btVector3(-8.33, i, 2.25),																// Position
+			COLGROUP_BOX,																			// Group
+			COLGROUP_BOX | COLGROUP_STATIC | COLGROUP_BULLET,										// Mask
+			//btQuaternion(btVector3(.5, .5, .5), .5);															
+			btQuaternion(0, 1, 0, .25));															// Rotation
+
+		CreateGameObject(new btCylinderShape(btVector3(2.5, .5, 1)),
+			1.0f,
+			btVector3(1, 1, i%2),
+			btVector3(-8.33, i, 29.25),
+			COLGROUP_BOX,
+			COLGROUP_BOX | COLGROUP_STATIC | COLGROUP_BULLET,
+			btQuaternion(0, 1, 0, .25));
+		
+		CreateGameObject(new btCylinderShape(btVector3(2.5, .5, 1)),
+			1.0f,
+			//btVector3(i % 2, (i % 2) * .01, i % 2),
+			btVector3(1 - (.1 * (i %2)), 1 - (.1 * (i % 2)), 1 - (.1 * (i % 2))),
+			btVector3(18.75, i, 2.25),
+			COLGROUP_BOX,
+			COLGROUP_BOX | COLGROUP_STATIC | COLGROUP_BULLET,
+			btQuaternion(0, 1, 0, .25));
+			
+		CreateGameObject(new btCylinderShape(btVector3(2.5, .5, 1)),
+			1.0f,
+			btVector3(1, 1, i % 2),
+			btVector3(18.75, i, 29.25),
+			COLGROUP_BOX,
+			COLGROUP_BOX | COLGROUP_STATIC | COLGROUP_BULLET,
+			btQuaternion(0, 1, 0, .25));
+	}
+
 	// create 25 boxes and spheres in a 5x5 stack formation 
-	float yPos = 0;
+	//float yPos = 0;
 	for (int i = 0; i < 55; i++) {
-		float xPos = -5 + 2 * (float)(i % BLOCKS_IN_ROW);														// Calculate x position for the object (5 columns)
+		//float xPos = -5 + 2 * (float)(i % BLOCKS_IN_ROW);														// Calculate x position for the object (5 columns)
+		xPos = -5 + 2 * (float)(i % BLOCKS_IN_ROW);																// Calculate x position for the object (5 columns)
 		if (i % BLOCKS_IN_ROW == 0) yPos += 2;																	// Calculate y position for the object (5 rows)
 
 		btVector3 position0(xPos, yPos, 4);																		// create a btVector3 for the position
 		btVector3 position1(xPos, yPos, 28);																	// create a btVector3 for the position
 		btVector3 position2(-7, yPos, xPos + 11);																// create a btVector3 for the position
-		btVector3 position3(17, yPos, xPos + 11);																// create a btVector3 for the position
-
+		btVector3 position3(17, yPos, xPos + 11);																// create a btVector3 for the position	
+		
 		// create a box
 		CreateGameObject(new btBoxShape(btVector3(1, 1, 1)),
 			1.0f,
@@ -133,10 +212,23 @@ void JoeScene::CreateObjects() {
 		CreateGameObject(new btSphereShape(1.2),
 			1.0f,
 			btVector3(i % 2, 0.0f, 1.0f),																		// alternate colors
-			//btVector3(0.9f, 0.9f + ((i%2) * 0.025f), 1.0f),																		// alternate colors
+			//btVector3(0.9f, 0.9f + ((i%2) * 0.025f), 1.0f),													// alternate colors
 			position,
 			COLGROUP_SPHERE,
 			COLGROUP_SPHERE | COLGROUP_STATIC);																	// spheres can collide with the ground plane and other spheres
+		*/
+
+
+		//GL_TextControl* blah = new GL_TextControl;
+		//glRastPos3f(btScalar(20), btScalar(20), btScalar(0));
+		//GLDebugDrawString(20, 20, "test");
+		//btVector3 rgb(1, 1, 1);
+		//GLDebugDrawStringInternal(20, 20, "test", rgb);
+		/*
+		displayText(10, 10, 1, 1, 1, "test");
+		displayText(10, -10, 1, 1, 1, "test");
+		displayText(-10, -10, 1, 1, 1, "test");
+		displayText(-10, 10, 1, 1, 1, "test");
 		*/
 	}
 }
