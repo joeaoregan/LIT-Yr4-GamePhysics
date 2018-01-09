@@ -10,7 +10,8 @@
 
 enum ObjectTypes {
 	NORMAL = 0,
-	PROJECTILE
+	PROJECTILE,
+	EXPLODING
 };
 
 class GameObject {

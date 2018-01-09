@@ -67,7 +67,7 @@ void JoeScene::InitializePhysics() {
 	m_pSolver = new btSequentialImpulseConstraintSolver();														// create the constraint solver	
 	m_pWorld = new btDiscreteDynamicsWorld(m_pDispatcher, m_pBroadphase, m_pSolver, m_pCollisionConfiguration);	// create the world
 	CreateObjects();
-
+	
 	InitSDLAudio();
 	Audio::Instance()->loadMediaAudio();
 
