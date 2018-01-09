@@ -5,6 +5,9 @@
 
 //using namespace std;
 
+//Mix_Music  *gMusic = NULL;
+//Mix_Chunk *gSound = NULL;
+
 Audio* Audio::s_pInstance;			// Singleton so only one instance of Audio exists in the game, for easy access
 
 const int NUM_SOUND_FX = 3;			// Number of sound effects in array

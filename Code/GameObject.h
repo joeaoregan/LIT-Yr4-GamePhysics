@@ -10,7 +10,7 @@
 
 enum ObjectTypes {
 	NORMAL = 0,
-	BULLET
+	PROJECTILE
 };
 
 class GameObject {

@@ -88,8 +88,8 @@ public:
 		bool playAudio = false);																	// JOR Play sound effect, initially set false
 
 	void ShootBox(const btVector3 &direction);
-	void ShootBall(const btVector3 &direction);														// JOR
-	void ShootArrow(const btVector3 &direction);													// JOR
+	//void ShootBall(const btVector3 &direction);													// JOR
+	//void ShootArrow(const btVector3 &direction);													// JOR
 	void DestroyGameObject(btRigidBody* pBody);
 	GameObject* FindGameObject(btRigidBody* pBody);													// Ch 6.1
 
@@ -108,7 +108,7 @@ public:
 	virtual void SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1);
 
 
-	void displayText(float x, float y, int r, int g, int b, const char *string);					// JOR
+	//void displayText(float x, float y, int r, int g, int b, const char *string);					// JOR
 
 protected:
 	// camera control

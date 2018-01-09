@@ -6,8 +6,6 @@
 #include "BulletOpenGLApplication.h"
 #include <iostream>
 
-#include "Added/GLDebugFont.h"
-
 #define RADIANS_PER_DEGREE 0.01745329f														// Constant for 3D Math
 #define CAMERA_STEP_SIZE 5.0f																// Constant for camera speed
 
@@ -87,10 +85,6 @@ void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y) {
 			DestroyGameObject(result.pBody);												// destroy the corresponding game object
 			break;
 		}
-		// Audio 
-		case 'p': Audio::Instance()->playPauseMusic(); break;								// JOR Pause or play the music
-		case '.': Audio::Instance()->musicForward(); break;									// JOR Skip music track backwards
-		case ',': Audio::Instance()->musicBack(); break;									// JOR Skip music track forwards
 	}
 }
 
@@ -148,6 +142,7 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y) {
 			else RemovePickingConstraint();													// button up, remove the picking constraint when we release the LMB
 			break;
 		}
+		/*
 		case 2: if (state == 0) {
 			std::cout << "Right Button Pressed" << std::endl;
 			Audio::Instance()->playFX("swoosh1FX");											// JOR Play swoosh sound 1 from map using ID 
@@ -155,12 +150,7 @@ void BulletOpenGLApplication::Mouse(int button, int state, int x, int y) {
 			//ShootBox(GetPickingRay(x, y)); break;											// Ch5.1right mouse button, pressed down, shoot a box
 			ShootArrow(GetPickingRay(x, y)); break;											// JOR Right mouse button pressed, shoot arrow
 		}
-		case 1: if (state == 0) {
-			std::cout << "Middle Button Pressed" << std::endl;
-			Audio::Instance()->playFX("swoosh2FX");											// JOR Play swoosh sound 2 from map using ID 
-			//Audio::Instance()->Fire2();													// JOR Play swoosh sound 2
-			ShootBall(GetPickingRay(x, y)); break;											// JOR Middle button pressed, shoot a sphere
-		}
+		*/
 	}
 }
 void BulletOpenGLApplication::PassiveMotion(int x, int y) {}
@@ -333,51 +323,7 @@ void BulletOpenGLApplication::RenderScene() {
 																							// Bullet will figure out what needs to be drawn then call to our DebugDrawer class to do the rendering for us
 }
 
-
-// JOR
-void BulletOpenGLApplication::displayText(float x, float y, int r, int g, int b, const char *string) {
-	//glColor3f(r, g, b);
-	//glColor3f(0, 0, 0);
-	glColor3f(1, 1, 1);
-	//glRasterPos2f(x, y);
-	glRasterPos3f(x, y, 0);
-	//glRasterPos2f(m_screenWidth + x, y);
-	for (int i = 0; i < strlen(string); i++) {
-		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, string[i]);
-	}
-}
-
-// JOR - From DemoApplication.cpp
-void DisplayString(int x, int y, char* message) {
-	//glRasterPos3f(btScalar(x), btScalar(y), btScalar(0));
-	glRasterPos3f(10, 10, 20);
-	GLDebugDrawString(x, y, message);
-}
-
 void BulletOpenGLApplication::UpdateScene(float dt) {
-
-	//GL_TextControl* blah = new GL_TextControl;
-	//glRastPos3f(btScalar(20), btScalar(20), btScalar(0));
-	//GLDebugDrawString(20, 20, "test");
-	//btVector3 rgb(1, 1, 1);
-	//GLDebugDrawStringInternal(20, 20, "test", rgb);
-
-	//std::cout << "Test Display" << std::endl;	// Doesn't repeat v.often
-	// Displays in scene space, not window
-	displayText(10, 10, 1, 1, 1, "Hit The Castle");	// Works
-	//displayText(0, 11, 0, 0, 0, "Hit The Castle");
-
-	/*
-	DisplayString(10, 10, "test2");
-	DisplayString(10, -10, "test2");
-	DisplayString(-10, 10, "test2");
-	DisplayString(-10, -10, "test2");
-	*/
-	//displayProfileString(0, 0, "test");
-	//displayText(10, -10, 1, 1, 1, "test");
-	//displayText(-10, -10, 1, 1, 1, "test");
-	//displayText(-10, 10, 1, 1, 1, "test");
-
 	if (m_pWorld) {																			// check if the world object exists		
 		m_pWorld->stepSimulation(dt);														// step the simulation through time. This is called every update and the amount of elasped time was determined back in ::Idle() by our clock object.
 	}
@@ -487,85 +433,11 @@ void BulletOpenGLApplication::ShootBox(const btVector3 &direction) {
 	velocity.normalize();
 	velocity *= 25.0f;
 
-	pObject->SetType(BULLET);																										// JOR Set the type as bullet
+	pObject->SetType(PROJECTILE);																										// JOR Set the type as bullet
 
 	pObject->GetRigidBody()->setLinearVelocity(velocity);																			// set the linear velocity of the box
 }
 
-void BulletOpenGLApplication::ShootBall(const btVector3 &direction) {
-
-	// create game object (shape, mass, colour, initial position, group, mask, rotation)
-
-	//GameObject* pObject = CreateGameObject(new btBoxShape(btVector3(.5, .5, .5)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition);	// create a new box object
-	GameObject* pObject = CreateGameObject(new btSphereShape(0.5),
-		1.0f,																															// Mass
-		btVector3(1.0f, 1.0f, 0.0f),																									// Colour
-		m_cameraPosition, 																												// Start at Cameras position
-		COLGROUP_BULLET,																												// Collision groups are box and bullet
-		COLGROUP_BOX);
-
-	pObject->SetPlayAudio(false);
-	//pObject->SetName("bullet");
-	pObject->SetType(BULLET);																											// JOR Set the type as bullet
-
-	btVector3 velocity = direction;																										// calculate the velocity
-	velocity.normalize();
-	velocity *= 25.0f;
-
-	pObject->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the box
-}
-
-void BulletOpenGLApplication::ShootArrow(const btVector3 &direction) {
-
-	// create game object (shape, mass, colour, initial position, group, mask, rotation)
-
-	GameObject* pBox1 = CreateGameObject(new btBoxShape(btVector3(0.1, 0.05, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0, -0.2, 3.75));	// create a new box object
-	GameObject* pBox2 = CreateGameObject(new btBoxShape(btVector3(0.1, 0.05, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0, 0.2, 3.75));	// create a new box object
-	GameObject* pBox3 = CreateGameObject(new btBoxShape(btVector3(0.05, 0.1, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(-0.2, 0, 3.75));	// create a new box object
-	GameObject* pBox4 = CreateGameObject(new btBoxShape(btVector3(0.05, 0.1, 0.15)), 1, btVector3(0.4f, 0.f, 0.4f), m_cameraPosition - btVector3(0.2, 0, 3.75));	// create a new box object
-
-	// Arrowhead
-	btVector3 points[5] = { btVector3(-0.25,0.25,0.25),
-		btVector3(-0.25,0.25,-0.25),
-		btVector3(-0.25,-0.25,0.25),
-		btVector3(-0.25,-0.25,-0.25),
-		btVector3(.75,0,0) };
-	// create our convex hull
-	btConvexHullShape* pShape = new btConvexHullShape(&points[0].getX(), 5);
-	// initialize the object as a polyhedron
-	pShape->initializePolyhedralFeatures();
-
-	// create the game object using our convex hull shape
-	GameObject* pObject = CreateGameObject(pShape, 1.0, btVector3(1, 1, 1), m_cameraPosition, COLGROUP_BULLET, COLGROUP_BOX, btQuaternion(0, 1, 0, -1));
-	
-
-	// Shaft = cylinder
-	GameObject* pObject2 = CreateGameObject(new btCylinderShape(btVector3(.1, 2, 1)),
-		1.0f,
-		btVector3(1,1,1),
-		m_cameraPosition - btVector3(0,0,2),
-		COLGROUP_BULLET,
-		COLGROUP_BOX | COLGROUP_STATIC,
-		btQuaternion(1, 0, 0, -1));
-		//btQuaternion(m_cameraPitch, m_cameraYaw, 0, 1));
-		//btQuaternion(1 + m_cameraPitch, 0, 0, ));
-		//btQuaternion(1,0,0, -1) + btQuaternion(m_cameraPitch, m_cameraYaw,0,1));
-	
-	pObject->SetPlayAudio(false);
-	//pObject->SetName("bullet");
-	pObject->SetType(BULLET);																											// JOR Set the type as bullet
-
-	btVector3 velocity = direction;																										// calculate the velocity
-	velocity.normalize();
-	velocity *= 25.0f;
-
-	pBox1->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
-	pBox2->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
-	pBox3->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
-	pBox4->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
-	pObject->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrowhead
-	pObject2->GetRigidBody()->setLinearVelocity(velocity);																				// set the linear velocity of the arrow shaft
-}
 // Ch5.1
 //bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output) {					// Ch 6.3 Changed
 bool BulletOpenGLApplication::Raycast(const btVector3 &startPosition, const btVector3 &direction, RayResult &output, bool includeStatic) {	// Ch 6.3
@@ -728,15 +600,13 @@ void BulletOpenGLApplication::CheckForCollisionEvents() {
 }
 
 // Ch 6.1 Added, 6.2 Removed
-void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
-	
+void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody * pBody1) {	
 	// find the two colliding objects
 	//GameObject* pObj0 = FindGameObject(pBody0);
 	//GameObject* pObj1 = FindGameObject(pBody1);
 		
 	//if (!pObj0 || !pObj1) return;																						// exit if we didn't find anything
-
-
+	
 	// set their colors to white
 	//pObj0->SetColor(btVector3(1.0,1.0,1.0));
 	//pObj1->SetColor(btVector3(1.0,1.0,1.0));
@@ -744,7 +614,7 @@ void BulletOpenGLApplication::CollisionEvent(btRigidBody * pBody0, btRigidBody *
 
 // Ch 6.1 Added, 6.2 Removed
 void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody * pBody1) {
-	
+	/*
 	// get the two separating objects
 	GameObject* pObj0 = FindGameObject((btRigidBody*)pBody0);
 	GameObject* pObj1 = FindGameObject((btRigidBody*)pBody1);
@@ -757,7 +627,7 @@ void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody 
 	
 
 	//DestroyGameObject(pBody0);	// destroys all collidable objects
-
+	*/
 	/*
 	//if (!pObj1->GetPlayAudio() || !pObj0->GetPlayAudio()) {
 	if (!pObj1->GetPlayAudio()) {
@@ -770,6 +640,7 @@ void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody 
 		pObj1->SetPlayAudio(true);
 	}
 	*/
+	/*
 	if (pObj0->GetType() == BULLET) {
 		Audio::Instance()->playFX("gunfireFX");
 		DestroyGameObject(pObj0->GetRigidBody());
@@ -778,6 +649,7 @@ void BulletOpenGLApplication::SeparationEvent(btRigidBody * pBody0, btRigidBody 
 		Audio::Instance()->playFX("gunfireFX");
 		DestroyGameObject(pObj1->GetRigidBody());
 	}
+	*/
 }
 
 // Ch 6.1
