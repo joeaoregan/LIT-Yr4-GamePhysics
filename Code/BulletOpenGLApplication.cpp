@@ -83,6 +83,7 @@ void BulletOpenGLApplication::Keyboard(unsigned char key, int x, int y) {
 			// perform the raycast
 			if (!Raycast(m_cameraPosition, GetPickingRay(x, y), result)) return;			// return if the test failed		
 			DestroyGameObject(result.pBody);												// destroy the corresponding game object
+			std::cout << "D pressed" << std::endl; 
 			break;
 		}
 	}
@@ -304,6 +305,8 @@ void BulletOpenGLApplication::ZoomCamera(float distance) {
 	UpdateCamera();																			// update the camera since we changed the zoom distance	
 }
 
+#include "Joe/Text.h"
+
 void BulletOpenGLApplication::RenderScene() {	
 	btScalar transform[16];																	// create an array of 16 floats (representing a 4x4 matrix)
 	/*
@@ -321,7 +324,11 @@ void BulletOpenGLApplication::RenderScene() {
 
 	m_pWorld->debugDrawWorld();																// Ch 4.2 - after rendering all game objects, perform debug rendering. 
 																							// Bullet will figure out what needs to be drawn then call to our DebugDrawer class to do the rendering for us
+
+
+	//Text::Instance()->PrintText(20, 20, "Test Text");
 }
+
 
 void BulletOpenGLApplication::UpdateScene(float dt) {
 	if (m_pWorld) {																			// check if the world object exists		
@@ -381,7 +388,7 @@ void BulletOpenGLApplication::DrawShape(btScalar* transform, const btCollisionSh
 GameObject* BulletOpenGLApplication::CreateGameObject(btCollisionShape* pShape, const float &mass, const btVector3 &color, const btVector3 &initialPosition, short group, short mask, const btQuaternion &initialRotation, bool playAudio) {	// Ch8 Added
 	GameObject* pObject = new GameObject(pShape, mass, color, initialPosition, initialRotation, false);					// create a new game object
 		
-	m_objects.push_back(pObject);																						// push it to the back of the list
+	m_objects.push_back(pObject);																						// push it to the back of the list of game objects
 		
 	if (m_pWorld) {																										// check if the world object is valid		
 		//m_pWorld->addRigidBody(pObject->GetRigidBody());																// Ch8 REMOVED add the object's rigid body to the world

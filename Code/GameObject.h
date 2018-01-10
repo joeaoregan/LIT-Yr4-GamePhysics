@@ -11,7 +11,9 @@
 enum ObjectTypes {
 	NORMAL = 0,
 	PROJECTILE,
-	EXPLODING
+	EXPLODING,
+	GROUND, 
+	BONUS
 };
 
 class GameObject {

@@ -3,12 +3,16 @@
 #include "Audio.h"
 #include "Text.h"
 
+// bmp image
+//GLuint image = loadBMP_custom("./test.bmp");
+
 // Ch 6.3
 JoeSceneV2::JoeSceneV2() : BulletOpenGLApplication(),
 	m_bApplyForce(false),
 	m_pExplosion(0),
 	m_bCanExplode(true),
-	m_canFireBall(true) {
+	m_canFireBall(true),
+	m_score(0) {
 }
 
 // Initialise physics elements
@@ -55,7 +59,7 @@ void JoeSceneV2::CreateObjects() {
 	m_pTrigger->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);														// 6.2 - flag the trigger to ignore contact responses	
 	m_pWorld->addCollisionObject(m_pTrigger);																						// 6.2 - add the trigger to our world
 	*/																													
-
+	/*
 	// Compound shape: Create two shapes for the rod and the load
 	//CreateGameObject(new btCylinderShape(btVector3(1, 1, 1)), 1.0, btVector3(0.0f, 0.7f, 0.0f), btVector3(-2, 10.0f, 0.0f));		// Ch 7.1 - create a green cylinder
 	btCollisionShape* pRod = new btBoxShape(btVector3(1.5f, 0.2f, 0.2f));
@@ -74,7 +78,7 @@ void JoeSceneV2::CreateObjects() {
 	trans.setOrigin(btVector3(1.75f, 0.0f, 0.0f));
 	pCompound->addChildShape(trans, pLoad);	
 	CreateGameObject(pCompound, 2.0f, btVector3(0.8,0.4,0.1), btVector3(-4, 10.0f, 0.0f));											// Ch 7.3 - Create a game object using the compound shape
-
+	*/
 	float xPos = 0, yPos =0;
 	/*
 	btVector3 positions[4];
@@ -217,8 +221,7 @@ void JoeSceneV2::CollisionEvent(btRigidBody* pBody0, btRigidBody* pBody1) {
 	// Find the two colliding objects
 	GameObject* pObj0 = FindGameObject((btRigidBody*)pBody0);
 	GameObject* pObj1 = FindGameObject((btRigidBody*)pBody1);
-
-
+	
 	// Impulse testing (needs to be before collisions so it is detected)
 	if (pBody0 == m_pExplosion || pBody1 == m_pExplosion) {
 		std::cout << "Explosion Detected" << std::endl;
@@ -242,10 +245,12 @@ void JoeSceneV2::CollisionEvent(btRigidBody* pBody0, btRigidBody* pBody1) {
 	if (pObj0->GetType() == PROJECTILE) {
 		Audio::Instance()->playFX("gunfireFX");
 		DestroyGameObject(pObj0->GetRigidBody());
+		incrementScore(10);
 	}
 	if (pObj1->GetType() == PROJECTILE) {
 		Audio::Instance()->playFX("gunfireFX");
 		DestroyGameObject(pObj1->GetRigidBody());
+		incrementScore(10);
 	}
 	
 	// Create explosion for Ball projectile collision (not working)
@@ -280,7 +285,9 @@ void JoeSceneV2::CollisionEvent(btRigidBody* pBody0, btRigidBody* pBody1) {
 		//m_bCanExplode = true; 
 		m_canFireBall = true;
 
-		DestroyGameObject(pExplosionBody); 
+		DestroyGameObject(pExplosionBody);
+
+		incrementScore(50);
 	}
 /*
 		//DestroyGameObject(pExplosionObj->GetRigidBody());
@@ -367,8 +374,7 @@ void JoeSceneV2::Keyboard(unsigned char key, int x, int y) {
 			//btTransform explodeTrans;
 			//explodeTrans.setIdentity();
 			//explodeTrans.setOrigin(result.hitPoint);
-			//m_pExplosion->setWorldTransform(explodeTrans);
-		
+			//m_pExplosion->setWorldTransform(explodeTrans);		
 			//m_pExplosion->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);							// set the collision flag		
 			//m_pWorld->addCollisionObject(m_pExplosion);															// add the explosion trigger to our world
 			break;
@@ -434,49 +440,65 @@ void JoeSceneV2::KeyboardUp(unsigned char key, int x, int y) {
 
 // Override Mouse() function. Added middle and right button projectile firing
 void JoeSceneV2::Mouse(int button, int state, int x, int y) {
-	BulletOpenGLApplication::Mouse(button, state, x, y);									// Call parent function
+	BulletOpenGLApplication::Mouse(button, state, x, y);										// Call parent function
 
 	switch (button) {
 		// Middle button fires ball
-		case 1: if (state == 0) {
-			std::cout << "Middle Button Pressed" << std::endl;
-			if (m_canFireBall) {
-				Audio::Instance()->playFX("swoosh2FX");											// JOR Play swoosh sound 2 from map using ID 
-				// Audio::Instance()->Fire2();													// JOR Play swoosh sound 2
-				//if (m_pExplosion || !m_bCanExplode) break;
-				ShootBall(GetPickingRay(x, y));											// JOR Middle button pressed, shoot a sphere
-				m_canFireBall = false;
+		case 1: 
+			if (state == 0) {
+				std::cout << "Middle Button Pressed" << std::endl;
+				if (m_canFireBall) {
+					Audio::Instance()->playFX("swoosh2FX");										// JOR Play swoosh sound 2 from map using ID 
+					// Audio::Instance()->Fire2();												// JOR Play swoosh sound 2
+					//if (m_pExplosion || !m_bCanExplode) break;
+					ShootBall(GetPickingRay(x, y));												// JOR Middle button pressed, shoot a sphere
+					m_canFireBall = false;
+				} 
+				break;
+			} else {
+				std::cout << "Middle Button Not Pressed" << std::endl;
+				//m_bCanExplode = true;														// Create another explosion when the key is released	
+				break;
 			}
-			break;
-		}
-				else {
-					std::cout << "Middle Button Not Pressed" << std::endl;
-					//m_bCanExplode = true;											// Create another explosion when the key is released	
-					break;
-				}
-				// Right button fires arrow
-		case 2: if (state == 0) {
-			std::cout << "Right Button Pressed" << std::endl;
-			Audio::Instance()->playFX("swoosh1FX");											// JOR Play swoosh sound 1 from map using ID 
-			//Audio::Instance()->Fire1();													// JOR Play swoosh sound 1
-			//ShootArrow(GetPickingRay(x, y)); break;										// JOR Right mouse button pressed, shoot arrow
-			ShootArrowCompound(GetPickingRay(x, y)); break;									// JOR Right mouse button pressed, shoot arrow
-		}
-				else {
-					std::cout << "Right Button Not Pressed" << std::endl; break;
-				}
+		// Right button fires arrow
+		case 2: 
+			if (state == 0) {
+				std::cout << "Right Button Pressed" << std::endl;
+				Audio::Instance()->playFX("swoosh1FX");											// JOR Play swoosh sound 1 from map using ID 
+				//Audio::Instance()->Fire1();													// JOR Play swoosh sound 1
+				//ShootArrow(GetPickingRay(x, y)); break;										// JOR Right mouse button pressed, shoot arrow
+				ShootArrowCompound(GetPickingRay(x, y)); break;									// JOR Right mouse button pressed, shoot arrow
+			} else {
+				std::cout << "Right Button Not Pressed" << std::endl; break;
+			}
 	}
 }
 
-// Ch 6.3
-void JoeSceneV2::UpdateScene(float dt) {
-	BulletOpenGLApplication::UpdateScene(dt);																		// call the base implementation first
+void JoeSceneV2::RenderScene() {
+	BulletOpenGLApplication::RenderScene();														// Call the base implementation first
+	//int score = 0;
+	char scoreText[20];
+	//snprintf(scoreText, sizeof(scoreText), "Score: %d", score);
+	snprintf(scoreText, sizeof(scoreText), "Score: %d", m_score);
 
-	Text::Instance()->DisplayText(10, 10, 1, 1, 1, "Hit The Castle");												// Access text function using singleton
+	char* test = "Joe O'Regan K00203642";
+
+	//Text::Instance()->PrintText(20, 20, "Score: ");
+	Text::Instance()->PrintText(20, 20, scoreText);
+	Text::Instance()->PrintText(m_screenWidth-240, 20, "Joe O'Regan K00203642");
+}
+
+// Overrides BulletOpenGLApplication UpdateScene()
+void JoeSceneV2::UpdateScene(float dt) {
+	BulletOpenGLApplication::UpdateScene(dt);													// Call the base implementation first
+
+
+	Text::Instance()->DisplayText(10, 10, 1, 1, 1, "Hit The Castle");							// Access text function using singleton
+	
 	// Force testing
 	if (m_bApplyForce) {
 		if (!m_pBox) return;		
-		m_pBox->GetRigidBody()->applyCentralForce(btVector3(0, 20, 0));												// apply a central upwards force that exceeds gravity
+		m_pBox->GetRigidBody()->applyCentralForce(btVector3(0, 20, 0));							// apply a central upwards force that exceeds gravity
 	}
 
 	/*
@@ -497,6 +519,9 @@ void JoeSceneV2::UpdateScene(float dt) {
 	}
 
 	//if (!m_bCanExplode) std::cout << "test2" << std::endl;
+
+
+	//Text::Instance()->PrintText(20, 20, "Test Text");
 }
 
 /* PROJECTILES */

@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
 	//CollisionFilteringDemo demo;							// Ch8 Added, Ch 9 Removed
 	//SoftBodyDemo demo;									// Ch9 Added
 
-	//JoeScene demo;										// 21/12/2017
-	JoeSceneV2 demo;										// 09/01/2017
+	JoeScene demo;											// 21/12/2017
+	//JoeSceneV2 demo;										// 09/01/2017
 
 	return glutmain(argc, argv, 1024, 768, "Year 4 - Game Physics CA - Bullet Physics and OpenGL - Joe O'Regan K00203642", &demo);
 }

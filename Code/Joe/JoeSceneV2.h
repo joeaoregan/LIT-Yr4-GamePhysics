@@ -21,6 +21,7 @@ public:
 	virtual void Keyboard(unsigned char key, int x, int y) override;				// Override Key function of BulletOpenGLApplication
 	virtual void KeyboardUp(unsigned char key, int x, int y) override;				// Override Key up function of BulletOpenGLApplication 
 	virtual void Mouse(int button, int state, int x, int y) override;				// Override the Mouse() function of BulletOpenGLApplication
+	virtual void RenderScene() override;											// Override the RenderScene() functione of BulletOpenGLApplication
 	virtual void UpdateScene(float dt);												// Scene updating. Overriden from parent class
 
 	virtual void CollisionEvent(btRigidBody* pBody0, btRigidBody* pBody1) override;	// Handle collisions. Override BulletOpenGLApplication function
@@ -32,6 +33,8 @@ public:
 	void CreateExplosion(const btVector3 &origin);									// Create explosion at position
 	//void CreateExplosion2(btTransform &transform);
 
+	void incrementScore(int amount) { m_score += amount; }							// Add value to score
+
 protected:	
 	GameObject* m_pBox;																// Right click - box to lift
 	//btCollisionObject* m_pTrigger;												// Simple trigger volume
@@ -39,7 +42,9 @@ protected:
 	bool m_bApplyForce;																// Is the 'g' key held down
 
 	// Explosion variables
-	btCollisionObject* m_pExplosion;	
-	bool m_canFireBall;
-	bool m_bCanExplode;
+	btCollisionObject* m_pExplosion;												// Explosion object
+	bool m_canFireBall;																// Can only fire one ball at a time
+	bool m_bCanExplode;																// If an explosion can happen or not
+
+	int m_score;																	// Score for hitting an object
 };

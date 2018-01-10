@@ -18,6 +18,8 @@ public:
 
 	void DisplayString(int x, int y, char* message);
 
+	void PrintText(int nX, int nY, char* pszText);													// One example, freeGLUT
+
 private:
 	static Text* s_pInstance;
 };
