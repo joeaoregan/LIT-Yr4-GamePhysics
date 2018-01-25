@@ -38,7 +38,7 @@ Castle walls destroyed by exploding ball
 
 ---
 
-![Screenshot 6: Bonus Letter compound shapes](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot56.png "Bonus Letter compound shapes")
+![Screenshot 6: Bonus Letter compound shapes](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot6.png "Bonus Letter compound shapes")
 The letters are created using compound shapes, and have a different points value and effect to the castle blocks
 
 ---
