@@ -18,32 +18,32 @@ Castle, walls are box objects, towers are cylinder and cone objects
 
 ---
 
-![Screenshot 2: Arrow created using compound shape](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Arrow compound shape")
+![Screenshot 2: Arrow created using compound shape](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot2.png "Arrow compound shape")
 The arrow is created using compounds shapes, and fired right-clicking
 
 ---
 
-![Screenshot 3: Arrows destroy individual castle blocks](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Arrows destroy individual castle blocks")
+![Screenshot 3: Arrows destroy individual castle blocks](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot3.png "Arrows destroy individual castle blocks")
 Arrows destroy individual castle blocks, with sound effect
 
 ---
 
-![Screenshot 4: Exploding Ball](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Exploding ball")
+![Screenshot 4: Exploding Ball](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot4.png "Exploding ball")
 The exploding balls are created using sphere objects. Fired using the middle mouse button, they explode on impact with castle triggering an explosion at the point of impact, with sound effect
 
 ---
 
-![Screenshot 5: Castle walls destroyed by exploding ball](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Castle walls destroyed by exploding ball")
+![Screenshot 5: Castle walls destroyed by exploding ball](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot5.png "Castle walls destroyed by exploding ball")
 Castle walls destroyed by exploding ball
 
 ---
 
-![Screenshot 6: Bonus Letter compound shapes](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Bonus Letter compound shapes")
+![Screenshot 6: Bonus Letter compound shapes](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot56.png "Bonus Letter compound shapes")
 The letters are created using compound shapes, and have a different points value and effect to the castle blocks
 
 ---
 
-![Screenshot 7: Explosion](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot1.png "Tower Explosion")
+![Screenshot 7: Explosion](https://raw.githubusercontent.com/joeaoregan/Yr4-GamePhysics-Bullet-OpenGL-SDL/master/Screenshots/Screenshot7.png "Tower Explosion")
 Tower exploding after being hit by exploding sphere object
 
 ---
