@@ -1,9 +1,11 @@
-# Year 4 Games Design & Development 
-# Game Phyics Continuous Assesment
-### Joe O'Regan
-### K00203642
-### 25/01/2018 Updated Screenshots & Readme
+# Game Physics
+## Joe O'Regan (K00203642)
+### Year 4 (2017/18), Semester 7
+#### BSc Computing (Games Design and Development)
+##### Limerick Institute of Technology
+###### 25/01/2018 Updated Screenshots & Readme
 
+---
 
 ## Description:
 
