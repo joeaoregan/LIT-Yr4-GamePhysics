@@ -14,11 +14,12 @@ Scene demonstrating the use of game physics using the Bullet physics engine, Ope
 ---
 
 ## Videos:
+	
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=EJVCr7RJ0kY" target="_blank"><img src="https://i9.ytimg.com/vi/EJVCr7RJ0kY/mq2.jpg?sqp=CMzO2vAF&rs=AOn4CLCiv0wG42MQVtHzGWNqZF4V52baqQ" alt="Game Physics CA Scene 1" width="480" height="360" border="10" /></a>
+###### Bullet Physics: Youtube Vid 1
 
-<div>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/apLz-i1GBNI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/EJVCr7RJ0kY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</div>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=apLz-i1GBNI" target="_blank"><img src="https://i9.ytimg.com/vi/apLz-i1GBNI/mq3.jpg?sqp=CP_Q2vAF&rs=AOn4CLBkaT-fDawcd2JPUsfEa83KWGHe1A" alt="Game Physics CA Scene 1" width="480" height="360" border="10" /></a>
+###### Bullet Physics: Youtube Vid 2
 
 ---
 
