@@ -15,9 +15,10 @@ Scene demonstrating the use of game physics using the Bullet physics engine, Ope
 
 ## Videos:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/apLz-i1GBNI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/EJVCr7RJ0kY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div>
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/apLz-i1GBNI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+	<iframe width="560" height="315" src="https://www.youtube.com/embed/EJVCr7RJ0kY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 ---
 
